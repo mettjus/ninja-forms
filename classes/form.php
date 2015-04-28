@@ -80,11 +80,20 @@ class NF_Form {
 	 * Insert a field into our form
 	 * 
 	 * @access public
-	 * @since 2.9
-	 * @return bool()
+	 * @since 3.0
+	 * @return int $field_id
 	 */
-	public function insert_field( $field_id ) {
-		return nf_add_relationship( $field_id, 'field', $this->form_id, 'form' );
+	public function insert_field( $args ) {
+		global $wpdb;
+
+		$wpdb->insert( NF_FIELDS_TABLE_NAME, array( 'form_id' => $this->form_id ) );
+		$field_id = $wpdb->insert_id;
+		unset ( $args['form_id'] );
+		foreach ( $args as $meta_key => $meta_value ) {
+			$meta_value = maybe_serialize( $meta_value );
+			$wpdb->insert( NF_FIELDMETA_TABLE_NAME, array( 'field_id' => $field_id, 'meta_key' => $meta_key, 'meta_value' => $meta_value ) );
+		}
+		return $field_id;
 	}
 
 	/**
@@ -96,11 +105,27 @@ class NF_Form {
 	 */
 	public function update_fields() {
 		global $wpdb;
-
+		$field_ids = array();
 		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".id, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDS_TABLE_NAME . " JOIN " . NF_FIELDMETA_TABLE_NAME . " ON " . NF_FIELDMETA_TABLE_NAME . ".field_id = " . NF_FIELDS_TABLE_NAME . ".id AND " . NF_FIELDMETA_TABLE_NAME . ".meta_key = 'order' WHERE form_id = %d ORDER BY " . NF_FIELDMETA_TABLE_NAME . ".meta_value ASC", $this->form_id ), ARRAY_A );
-		
 		foreach ( $fields as $field ) {
-			$this->fields[ $field['id'] ] = Ninja_Forms()->field( $field['id'] );
+			$field_ids[] = $field['id'];
+		}
+		if ( ! empty ( $field_ids ) ) {
+			// $fieldmeta = $wpdb->get_results( "SELECT * FROM " . NF_FIELDMETA_TABLE_NAME . " WHERE `field_id` IN (" . implode( ',', array_map( 'intval', $field_ids ) ) . ")", ARRAY_A );
+			
+			foreach ( $field_ids as $field_id ) {
+
+				$meta = array();
+				// for ( $i = 0; $i < count( $fieldmeta ); $i++) { 
+				// 	if ( $field_id == $fieldmeta[ $i ]['field_id'] ) {
+				// 		$meta[] = $fieldmeta[ $i ];
+				// 	}
+				// }
+
+				// $meta[0]['form_id'] = $this->form_id;
+
+				$this->fields[ $field_id ] = Ninja_Forms()->field( $field_id, $meta );
+			}
 		}
 	}
 

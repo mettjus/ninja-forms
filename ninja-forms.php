@@ -263,7 +263,7 @@ class Ninja_Forms {
 	 */
 	public function form( $form_id = '' ) {
 		// Bail if we don't get a form id.
-
+		// delete_transient( 'nf_form_' . $form_id );
 		$form_var = 'form_' . $form_id;
 		// Check to see if an object for this form already exists in memory. If it does, return it.
 		if ( isset( self::$instance->$form_var ) )
@@ -292,8 +292,9 @@ class Ninja_Forms {
 	 * @since 2.9.11
 	 * @return object self::$instance->field_var
 	 */
-	public function field( $field_id = '' ) {
+	public function field( $field_id = '', $meta = array() ) {
 		// Bail if we don't get a field id.
+		// delete_transient( 'nf_field_' . $field_id );
 
 		$field_var = 'field_' . $field_id;
 		// Check to see if an object for this field already exists in memory. If it does, return it.
@@ -305,7 +306,7 @@ class Ninja_Forms {
 			self::$instance->$field_var = $field_obj;
 		} else {
 			// Create a new field object for this field.
-			self::$instance->$field_var = new NF_Field( $field_id );
+			self::$instance->$field_var = new NF_Field( $field_id, $meta );
 			// Save it into a transient.
 			set_transient( 'nf_field_' . $field_id, self::$instance->$field_var, DAY_IN_SECONDS );
 		}

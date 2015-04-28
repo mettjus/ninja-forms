@@ -29,16 +29,20 @@ function ninja_forms_import_form( $file ){
 		for ($x=0; $x < count( $form_fields ); $x++) {
 			$form_fields[$x]['form_id'] = $form_id;
 			$form_fields[$x]['data'] = apply_filters( 'nf_before_import_field', $form_fields[$x]['data'], $form_fields[$x]['id'] );
-			$form_fields[$x]['data'] = serialize( $form_fields[$x]['data'] );
+			if ( is_array ( $form_fields[$x]['data'] ) ) {
+				foreach ( $form_fields[ $x ]['data'] as $meta_key => $meta_value ) {
+					$form_fields[ $x ][ $meta_key ] = $meta_value;
+				}
+				unset ( $form_fields[ $x ]['data'] );
+			}
 			$old_field_id = $form_fields[$x]['id'];
 			$form_fields[$x]['id'] = NULL;
-			$wpdb->insert( NINJA_FORMS_FIELDS_TABLE_NAME, $form_fields[$x] );
-			$form_fields[$x]['id'] = $wpdb->insert_id;
+			$field_id = Ninja_Forms()->form( $form_id )->insert_field( $form_fields[ $x ] );
+			$form_fields[$x]['id'] = $field_id;
 			$form_fields[$x]['old_id'] = $old_field_id;
-			$form_fields[$x]['data'] = unserialize( $form_fields[$x]['data'] );
 		}
 	}
-
+	
 	$form['field'] = $form_fields;
 	$form['notifications'] = $notifications;	
 

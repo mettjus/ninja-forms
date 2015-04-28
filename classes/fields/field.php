@@ -19,22 +19,23 @@ class NF_Field
 	var $def_id = '';
 	var $settings = array();
 	
-	function __construct( $id = '' ) {
+	function __construct( $id = '', $meta = array() ) {
 		if ( ! empty ( $id ) ) {
 			// We have been passed a field ID, so we need to populate our id and data.
 			$this->id = $id;
-			$this->fetch();
+			$this->populate( $meta );
 		}
 	}
 
 	/**
-	 * Grab our settings from the database
-	 * @since  3.0
+	 * Populate our settings from our meta array
+	 * @since 3.0
 	 * @return void
 	 */
-	public function fetch() {
-		global $wpdb;
-		$meta = $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".form_id as 'form_id', " . NF_FIELDMETA_TABLE_NAME . ".meta_key, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDMETA_TABLE_NAME . " JOIN " . NF_FIELDS_TABLE_NAME . " ON " . NF_FIELDS_TABLE_NAME . ".id = " . NF_FIELDMETA_TABLE_NAME . ".field_id WHERE field_id = %d", $this->id ), ARRAY_A );
+	public function populate( $meta = array() ) {
+		if ( empty ( $meta ) ) {
+			$meta = $this->fetch();
+		}
 
 		foreach ( $meta as $m ) {
 			if ( '' == $this->form_id ) {
@@ -57,6 +58,16 @@ class NF_Field
 			}
 			$this->settings[ $m[ 'meta_key' ] ] = maybe_unserialize( $m['meta_value'] );
 		}
+	}
+
+	/**
+	 * Grab our settings from the database
+	 * @since  3.0
+	 * @return void
+	 */
+	public function fetch() {
+		global $wpdb;
+		return $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".form_id as 'form_id', " . NF_FIELDMETA_TABLE_NAME . ".meta_key, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDMETA_TABLE_NAME . " JOIN " . NF_FIELDS_TABLE_NAME . " ON " . NF_FIELDS_TABLE_NAME . ".id = " . NF_FIELDMETA_TABLE_NAME . ".field_id WHERE field_id = %d", $this->id ), ARRAY_A );
 	}
 
 	/**
