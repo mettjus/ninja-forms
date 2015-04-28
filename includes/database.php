@@ -74,33 +74,6 @@ function ninja_forms_get_form_by_sub_id( $sub_id ){
 
 // Begin Field Interaction Functions
 
-function ninja_forms_get_field_by_id($field_id){
-	global $wpdb;
-	$field_row = $wpdb->get_row($wpdb->prepare("SELECT * FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE id = %d", $field_id), ARRAY_A);
-	if( $field_row != null ){
-		$field_row['data'] = unserialize($field_row['data']);
-		return $field_row;
-	}else{
-		return false;
-	}
-}
-
-function ninja_forms_get_fields_by_form_id($form_id, $orderby = 'ORDER BY `order` ASC'){
-	global $wpdb;
-
-	$field_results = $wpdb->get_results($wpdb->prepare("SELECT * FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE form_id = %d ".$orderby, $form_id), ARRAY_A);
-	if(is_array($field_results) AND !empty($field_results)){
-		$x = 0;
-		$count = count($field_results) - 1;
-		while($x <= $count){
-			$field_results[$x]['data'] = unserialize($field_results[$x]['data']);
-			$x++;
-		}
-	}
-
-	return $field_results;
-}
-
 function ninja_forms_get_all_fields(){
 	global $wpdb;
 	$field_results = $wpdb->get_results("SELECT * FROM ".NINJA_FORMS_FIELDS_TABLE_NAME, ARRAY_A);
@@ -396,28 +369,4 @@ function nf_get_sub_count( $form_id, $post_status = 'publish' ) {
 	$count = $wpdb->get_var($sql);
 
 	return $count;
-}
-
-/**
- * Get an array of our fields by form ID.
- * The returned array has the field_ID as the key.
- *
- * @since 2.7
- * @param int $form_id
- * @return array $tmp_array
- */
-function nf_get_fields_by_form_id( $form_id, $orderby = 'ORDER BY `order` ASC' ){
-	global $wpdb;
-
-	$tmp_array = array();
-	$field_results = $wpdb->get_results($wpdb->prepare("SELECT * FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE form_id = %d ".$orderby, $form_id), ARRAY_A);
-	if ( is_array( $field_results ) && ! empty( $field_results ) ) {
-		foreach ( $field_results as $field ) {
-			$field_id = $field['id'];
-			$field['data'] = unserialize( $field['data'] );
-			$tmp_array[ $field_id ] = $field;
-		}
-	}
-
-	return $tmp_array;
 }

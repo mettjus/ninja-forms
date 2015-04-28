@@ -30,12 +30,6 @@ class NF_Form {
 	var $fields = array();
 
 	/**
-	 * @var fields - Fields List
-	 * @since 2.7
-	 */
-	var $field_keys = array();
-
-	/**
 	 * @var errors - Form errors
 	 * @since 2.7
 	 */
@@ -101,7 +95,13 @@ class NF_Form {
 	 * @return void
 	 */
 	public function update_fields() {
-		$this->fields = nf_get_fields_by_form_id( $this->form_id );
+		global $wpdb;
+
+		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".id, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDS_TABLE_NAME . " JOIN " . NF_FIELDMETA_TABLE_NAME . " ON " . NF_FIELDMETA_TABLE_NAME . ".field_id = " . NF_FIELDS_TABLE_NAME . ".id AND " . NF_FIELDMETA_TABLE_NAME . ".meta_key = 'order' WHERE form_id = %d ORDER BY " . NF_FIELDMETA_TABLE_NAME . ".meta_value ASC", $this->form_id ), ARRAY_A );
+		
+		foreach ( $fields as $field ) {
+			$this->fields[ $field['id'] ] = Ninja_Forms()->field( $field['id'] );
+		}
 	}
 
 	/**

@@ -969,3 +969,70 @@ function ninja_forms_update_form( $args ){
 	}
 	
 }
+
+/**
+ * Get field settings and data.
+ *
+ * @since  1.0
+ * @deprecated 3.0
+ */
+function ninja_forms_get_field_by_id( $field_id ) {
+	$field = Ninja_Forms()->field( $field_id );
+	$return = array();
+	$return['id'] = $field_id;
+	$return['form_id'] = $field->form_id;
+	$return['type'] = $field->type;
+	$return['order'] = $field->order;
+	$return['data'] = $field->settings;
+	$return['fav_id'] = $field->fav_id;
+	$return['def_id'] = $field->def_id;
+
+	return $return;
+}
+
+/**
+ * Get all fields attached to a form.
+ * 
+ * @since  1.0
+ * @deprecated 3.0
+ */
+function ninja_forms_get_fields_by_form_id($form_id, $orderby = 'ORDER BY `order` ASC'){
+	$return = array();
+	$x = 0;
+	foreach( Ninja_Forms()->form( $form_id )->fields as $field ) {
+		$return[ $x ]['id'] = $field->id;
+		$return[ $x ]['form_id'] = $field->form_id;
+		$return[ $x ]['type'] = $field->type;
+		$return[ $x ]['order'] = $field->order;
+		$return[ $x ]['data'] = $field->settings;
+		$return[ $x ]['fav_id'] = $field->fav_id;
+		$return[ $x ]['def_id'] = $field->def_id;
+		$x++;
+	}
+	
+	return $return;
+}
+
+/**
+ * Get an array of our fields by form ID.
+ * The returned array has the field_ID as the key.
+ *
+ * @since 2.7
+ * @deprecated 3.0
+ * @param int $form_id
+ * @return array $tmp_array
+ */
+function nf_get_fields_by_form_id( $form_id, $orderby = 'ORDER BY `order` ASC' ){
+	$return = array();
+	foreach( Ninja_Forms()->form( $form_id )->fields as $field ) {
+		$return[ $field->id ]['id'] = $field->id;
+		$return[ $field->id ]['form_id'] = $field->form_id;
+		$return[ $field->id ]['type'] = $field->type;
+		$return[ $field->id ]['order'] = $field->order;
+		$return[ $field->id ]['data'] = $field->settings;
+		$return[ $field->id ]['fav_id'] = $field->fav_id;
+		$return[ $field->id ]['def_id'] = $field->def_id;
+	}
+	
+	return $return;
+}

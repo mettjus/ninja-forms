@@ -420,7 +420,7 @@ function nf_output_registered_field_settings( $field_id, $data = array() ) {
 		}
 	}
 
-	add_action( 'nf_edit_field_advanced', 'nf_test', 10, 2 );
+	add_action( 'nf_edit_field_advanced', 'nf_edit_field_register_advanced', 10, 2 );
 
 	$settings_sections = apply_filters( 'nf_edit_field_settings_sections', array(
 		'restrictions' 	=> __( 'Restriction Settings', 'ninja-forms' ),
@@ -513,6 +513,6 @@ function nf_output_registered_field_settings( $field_id, $data = array() ) {
 
 }
 
-function nf_test( $field_id, $field_data ) {
+function nf_edit_field_register_advanced( $field_id, $field_data ) {
 	do_action( 'ninja_forms_edit_field_after_registered', $field_id, $field_data );
 }

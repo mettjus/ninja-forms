@@ -112,13 +112,13 @@ function nf_admin_save_builder() {
 	if( $form_id != '' && $form_id != 0 && $form_id != 'new' ){
 		foreach ( $field_data as $field_id => $vals )  {
 			$field_order = $order_array[$field_id];
-			$field_row = ninja_forms_get_field_by_id( $field_id );
-			$data = $field_row['data'];
+			Ninja_Forms()->field( $field_id )->update_setting( 'order', $field_order );
 			foreach( $vals as $k => $v ){
-				$data[$k] = $v;
+				Ninja_Forms()->field( $field_id )->update_setting( $k, $v );
 			}
-			$data_array = array('data' => serialize( $data ), 'order' => $field_order);
-			$wpdb->update( NINJA_FORMS_FIELDS_TABLE_NAME, $data_array, array( 'id' => $field_id ));
+
+			// Dump our field transient
+			delete_transient( 'nf_field_' . $field_id );
 		}
 
 		$date_updated = date( 'Y-m-d H:i:s', strtotime ( 'now' ) );
@@ -129,6 +129,7 @@ function nf_admin_save_builder() {
 
 	// Dump our current form transient.
 	delete_transient( 'nf_form_' . $form_id );
+
 
 	die();
 }

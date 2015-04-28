@@ -59,7 +59,7 @@ function ninja_forms_admin_js(){
 			array( 'backbone' ) );
 
 		if ( '' != $form_id ) {
-			$fields = Ninja_Forms()->form( $form_id )->fields;
+			$fields = nf_get_fields_by_form_id( $form_id );
 
 			$current_tab = ninja_forms_get_current_tab();
 			$current_page = isset ( $_REQUEST['page'] ) ? esc_html( $_REQUEST['page'] ) : '';

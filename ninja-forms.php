@@ -68,6 +68,11 @@ class Ninja_Forms {
 	var $notification_types = array();
 
 	/**
+	 * @var registered_field_types
+	 */
+	var $field_types = array();
+
+	/**
 	 * Main Ninja_Forms Instance
 	 *
 	 * Insures that only one instance of Ninja_Forms exists in memory at any one
@@ -122,6 +127,13 @@ class Ninja_Forms {
 
 		// Get our notifications up and running.
 		self::$instance->notifications = new NF_Notifications();
+
+		// Get our fields up and running.
+		// Register our notification types
+		Ninja_Forms()->field_types['_text'] = require_once( NF_PLUGIN_DIR . 'classes/fields/types/text.php' );
+
+		Ninja_Forms()->field_types = apply_filters( 'nf_field_types', Ninja_Forms()->field_types );
+
 
 		// Get our step processor up and running.
 		// We only need this in the admin.
@@ -271,6 +283,37 @@ class Ninja_Forms {
 	}
 
 	/**
+	 * Function that acts as a wrapper for our field_var - NF_Form() class.
+	 * It sets the field_id and then returns the instance, which is now using the
+	 * proper field id
+	 *
+	 * @access public
+	 * @param int $field_id
+	 * @since 2.9.11
+	 * @return object self::$instance->field_var
+	 */
+	public function field( $field_id = '' ) {
+		// Bail if we don't get a field id.
+
+		$field_var = 'field_' . $field_id;
+		// Check to see if an object for this field already exists in memory. If it does, return it.
+		if ( isset( self::$instance->$field_var ) )
+			return self::$instance->$field_var;
+		
+		// Check to see if we have a transient object stored for this field.
+		if ( false != ( $field_obj = get_transient( 'nf_field_' . $field_id ) ) ) {
+			self::$instance->$field_var = $field_obj;
+		} else {
+			// Create a new field object for this field.
+			self::$instance->$field_var = new NF_Field( $field_id );
+			// Save it into a transient.
+			set_transient( 'nf_field_' . $field_id, self::$instance->$field_var, DAY_IN_SECONDS );
+		}
+
+		return self::$instance->$field_var;
+	}
+
+	/**
 	 * Function that acts as a wrapper for our forms_var - NF_Form() class.
 	 *
 	 * @access public
@@ -306,6 +349,14 @@ class Ninja_Forms {
 		// Plugin Root File
 		if ( ! defined( 'NF_PLUGIN_FILE' ) )
 			define( 'NF_PLUGIN_FILE', __FILE__ );
+
+		// Fields table name
+		if ( ! defined( 'NF_FIELDS_TABLE_NAME') )
+			define( 'NF_FIELDS_TABLE_NAME', $wpdb->prefix . 'nf_fields' );
+
+		// Fieldmeta table name
+		if ( ! defined( 'NF_FIELDMETA_TABLE_NAME') )
+			define( 'NF_FIELDMETA_TABLE_NAME', $wpdb->prefix . 'nf_fieldmeta' );
 
 		// Objects table name
 		if ( ! defined( 'NF_OBJECTS_TABLE_NAME') )
@@ -384,6 +435,10 @@ class Ninja_Forms {
 		require_once( NF_PLUGIN_DIR . 'classes/notifications-table.php' );
 		// Include our base notification type
 		require_once( NF_PLUGIN_DIR . 'classes/notification-base-type.php' );
+		// Include our base field type
+		require_once( NF_PLUGIN_DIR . 'classes/fields/types/base-field.php' );
+		// Include our field object
+		require_once( NF_PLUGIN_DIR . 'classes/fields/field.php' );
 
 		if ( is_admin () ) {
 			// Include our step processing stuff if we're in the admin.
