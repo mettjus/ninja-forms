@@ -3,6 +3,9 @@
 function ninja_forms_edit_field_output_li( $field_id, $new = false ) {
 	global $wpdb, $ninja_forms_fields, $nf_rte_editors;
 	$field_row = ninja_forms_get_field_by_id( $field_id );
+	// echo "<pre>";
+	// print_r( $field_row );
+	// echo "</pre>";
 	$current_tab = ninja_forms_get_current_tab();
 	if ( isset ( $_REQUEST['page'] ) ) {
 		$current_page = esc_html( $_REQUEST['page'] );

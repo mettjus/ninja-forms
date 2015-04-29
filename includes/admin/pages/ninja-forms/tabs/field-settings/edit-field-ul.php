@@ -2,6 +2,9 @@
 add_action( 'ninja_forms_edit_field_ul', 'ninja_forms_edit_field_output_ul' );
 function ninja_forms_edit_field_output_ul( $form_id ){
 	$fields = ninja_forms_get_fields_by_form_id( $form_id );
+	// echo "<pre>";
+	// print_r( $fields );
+	// echo "</pre>";
 	?>
 	<div id="ninja-forms-viewport">
 		<input class="button-primary menu-save nf-save-admin-fields" id="ninja_forms_save_data_top" type="button" value="<?php _e('Save', 'ninja-forms'); ?>" />
@@ -10,6 +13,9 @@ function ninja_forms_edit_field_output_ul( $form_id ){
 	  		<?php
 				if( is_array( $fields ) AND !empty( $fields ) ){
 					foreach( $fields as $field ){
+						// echo "<pre>";
+						// print_r( $field );
+						// echo "</pre>";
 						ninja_forms_edit_field( $field['id'] );
 					}
 				}

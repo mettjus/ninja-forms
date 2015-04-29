@@ -72,6 +72,8 @@ class Ninja_Forms {
 	 */
 	var $field_types = array();
 
+	var $field_data = array();
+
 	/**
 	 * Main Ninja_Forms Instance
 	 *
@@ -127,6 +129,9 @@ class Ninja_Forms {
 
 		// Get our notifications up and running.
 		self::$instance->notifications = new NF_Notifications();
+
+		// Setup our main field method
+		self::$instance->field = new NF_Field();
 
 		// Get our fields up and running.
 		// Register our notification types
@@ -292,26 +297,12 @@ class Ninja_Forms {
 	 * @since 2.9.11
 	 * @return object self::$instance->field_var
 	 */
-	public function field( $field_id = '', $meta = array() ) {
+	public function field( $field_id = '' ) {
 		// Bail if we don't get a field id.
 		// delete_transient( 'nf_field_' . $field_id );
+		self::$instance->field->set_id( $field_id );
 
-		$field_var = 'field_' . $field_id;
-		// Check to see if an object for this field already exists in memory. If it does, return it.
-		if ( isset( self::$instance->$field_var ) )
-			return self::$instance->$field_var;
-		
-		// Check to see if we have a transient object stored for this field.
-		if ( false != ( $field_obj = get_transient( 'nf_field_' . $field_id ) ) ) {
-			self::$instance->$field_var = $field_obj;
-		} else {
-			// Create a new field object for this field.
-			self::$instance->$field_var = new NF_Field( $field_id, $meta );
-			// Save it into a transient.
-			set_transient( 'nf_field_' . $field_id, self::$instance->$field_var, DAY_IN_SECONDS );
-		}
-
-		return self::$instance->$field_var;
+		return self::$instance->field;
 	}
 
 	/**

@@ -111,20 +111,22 @@ function nf_admin_save_builder() {
 
 	if( $form_id != '' && $form_id != 0 && $form_id != 'new' ){
 		foreach ( $field_data as $field_id => $vals )  {
-			$field_order = $order_array[$field_id];
-			Ninja_Forms()->field( $field_id )->update_setting( 'order', $field_order );
-			foreach( $vals as $k => $v ){
-				Ninja_Forms()->field( $field_id )->update_setting( $k, $v );
-			}
+			if ( isset ( $order_array[ $field_id ] ) ) {
+				$field_order = $order_array[$field_id];
+				Ninja_Forms()->field()->update_order( $field_order, $field_id );
+				foreach( $vals as $k => $v ){
+					Ninja_Forms()->field()->update_setting( $k, $v, $field_id );
+				}
 
-			// Dump our field transient
-			delete_transient( 'nf_field_' . $field_id );
+				// Dump our field transient
+				delete_transient( 'nf_field_' . $field_id );				
+			}
 		}
 
 		$date_updated = date( 'Y-m-d H:i:s', strtotime ( 'now' ) );
-		Ninja_Forms()->form( $form_id )->update_setting( 'form_title', $form_title );
-		Ninja_Forms()->form( $form_id )->update_setting( 'date_updated', $date_updated );
-		Ninja_Forms()->form( $form_id )->update_setting( 'status', '' );
+		Ninja_Forms()->form()->update_setting( 'form_title', $form_title, $form_id );
+		Ninja_Forms()->form()->update_setting( 'date_updated', $date_updated, $form_id );
+		Ninja_Forms()->form()->update_setting( 'status', '', $form_id );
 	}
 
 	// Dump our current form transient.

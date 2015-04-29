@@ -977,15 +977,22 @@ function ninja_forms_update_form( $args ){
  * @deprecated 3.0
  */
 function ninja_forms_get_field_by_id( $field_id ) {
+
 	$field = Ninja_Forms()->field( $field_id );
+
 	$return = array();
+
 	$return['id'] = $field_id;
 	$return['form_id'] = $field->form_id;
 	$return['type'] = $field->type;
 	$return['order'] = $field->order;
-	$return['data'] = $field->settings;
+	$return['data'] = $field->meta;
 	$return['fav_id'] = $field->fav_id;
 	$return['def_id'] = $field->def_id;
+
+	// echo "<pre>";
+	// print_r( $return );
+	// echo "</pre>";
 
 	return $return;
 }
@@ -996,20 +1003,28 @@ function ninja_forms_get_field_by_id( $field_id ) {
  * @since  1.0
  * @deprecated 3.0
  */
-function ninja_forms_get_fields_by_form_id($form_id, $orderby = 'ORDER BY `order` ASC'){
+function ninja_forms_get_fields_by_form_id( $form_id, $orderby = 'ORDER BY `order` ASC' ) {
 	$return = array();
 	$x = 0;
-	foreach( Ninja_Forms()->form( $form_id )->fields as $field ) {
-		$return[ $x ]['id'] = $field->id;
-		$return[ $x ]['form_id'] = $field->form_id;
-		$return[ $x ]['type'] = $field->type;
-		$return[ $x ]['order'] = $field->order;
-		$return[ $x ]['data'] = $field->settings;
-		$return[ $x ]['fav_id'] = $field->fav_id;
-		$return[ $x ]['def_id'] = $field->def_id;
+	// echo "<pre>";
+	// print_r( Ninja_Forms()->form( $form_id )->field_data );
+	// echo "</pre>";
+	foreach ( Ninja_Forms()->form( $form_id )->field_data as $field_id => $field ) {
+		$return[ $x ]['id'] = $field_id;
+		$return[ $x ]['form_id'] = $field['form_id'];
+		$return[ $x ]['type'] = $field['type'];
+		$return[ $x ]['order'] = $field['order'];
+		$return[ $x ]['data'] = $field['meta'];
+		$return[ $x ]['fav_id'] = $field['fav_id'];
+		$return[ $x ]['def_id'] = $field['def_id'];
 		$x++;
+		
 	}
-	
+
+	// echo "<pre>";
+	// print_r( $return );
+	// echo "</pre>";
+
 	return $return;
 }
 
@@ -1024,15 +1039,16 @@ function ninja_forms_get_fields_by_form_id($form_id, $orderby = 'ORDER BY `order
  */
 function nf_get_fields_by_form_id( $form_id, $orderby = 'ORDER BY `order` ASC' ){
 	$return = array();
-	foreach( Ninja_Forms()->form( $form_id )->fields as $field ) {
-		$return[ $field->id ]['id'] = $field->id;
-		$return[ $field->id ]['form_id'] = $field->form_id;
-		$return[ $field->id ]['type'] = $field->type;
-		$return[ $field->id ]['order'] = $field->order;
-		$return[ $field->id ]['data'] = $field->settings;
-		$return[ $field->id ]['fav_id'] = $field->fav_id;
-		$return[ $field->id ]['def_id'] = $field->def_id;
+
+	foreach ( Ninja_Forms()->form( $form_id )->field_data as $field_id => $field ) {
+		$return[ $field_id ]['id'] = $field_id;
+		$return[ $field_id ]['form_id'] = $field['form_id'];
+		$return[ $field_id ]['type'] = $field['type'];
+		$return[ $field_id ]['order'] = $field['order'];
+		$return[ $field_id ]['data'] = $field['meta'];
+		$return[ $field_id ]['fav_id'] = $field['fav_id'];
+		$return[ $field_id ]['def_id'] = $field['def_id'];
 	}
-	
+
 	return $return;
 }

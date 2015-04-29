@@ -51,6 +51,12 @@ class NF_Form {
 		}
 	}
 
+	public function __wakeup() {
+		foreach ( $this->fields as $field ) {
+			Ninja_Forms()->field_data[ $field['id'] ] = $this->form_id;
+		}
+	}
+
 	/**
 	 * Add a form
 	 * 
@@ -86,7 +92,9 @@ class NF_Form {
 	public function insert_field( $args ) {
 		global $wpdb;
 
-		$wpdb->insert( NF_FIELDS_TABLE_NAME, array( 'form_id' => $this->form_id ) );
+		$order = isset ( $args['order'] ) ? $args['order'] : 999;
+		unset ( $args['order'] );
+		$wpdb->insert( NF_FIELDS_TABLE_NAME, array( 'form_id' => $this->form_id, 'order' => $order ) );
 		$field_id = $wpdb->insert_id;
 		unset ( $args['form_id'] );
 		foreach ( $args as $meta_key => $meta_value ) {
@@ -106,27 +114,51 @@ class NF_Form {
 	public function update_fields() {
 		global $wpdb;
 		$field_ids = array();
-		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".id, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDS_TABLE_NAME . " JOIN " . NF_FIELDMETA_TABLE_NAME . " ON " . NF_FIELDMETA_TABLE_NAME . ".field_id = " . NF_FIELDS_TABLE_NAME . ".id AND " . NF_FIELDMETA_TABLE_NAME . ".meta_key = 'order' WHERE form_id = %d ORDER BY " . NF_FIELDMETA_TABLE_NAME . ".meta_value ASC", $this->form_id ), ARRAY_A );
+		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT wp_nf_fields.id as 'id', wp_nf_fields.order as 'order' FROM " . NF_FIELDS_TABLE_NAME . " WHERE form_id = %d ORDER BY wp_nf_fields.order ASC", $this->form_id ), ARRAY_A );
+		// var_dump( $wpdb->prepare( "SELECT wp_nf_fields.id as 'id', wp_nf_fields.order as 'order' FROM " . NF_FIELDS_TABLE_NAME . " WHERE form_id = %d ORDER BY wp_nf_fields.order ASC", $this->form_id ) );
+		// echo "<pre>";
+		// print_r( $fields );
+		// echo "</pre>";
+
 		foreach ( $fields as $field ) {
 			$field_ids[] = $field['id'];
 		}
-		if ( ! empty ( $field_ids ) ) {
-			// $fieldmeta = $wpdb->get_results( "SELECT * FROM " . NF_FIELDMETA_TABLE_NAME . " WHERE `field_id` IN (" . implode( ',', array_map( 'intval', $field_ids ) ) . ")", ARRAY_A );
-			
-			foreach ( $field_ids as $field_id ) {
 
-				$meta = array();
-				// for ( $i = 0; $i < count( $fieldmeta ); $i++) { 
-				// 	if ( $field_id == $fieldmeta[ $i ]['field_id'] ) {
-				// 		$meta[] = $fieldmeta[ $i ];
-				// 	}
-				// }
-
-				// $meta[0]['form_id'] = $this->form_id;
-
-				$this->fields[ $field_id ] = Ninja_Forms()->field( $field_id, $meta );
+		$fieldmeta = $wpdb->get_results( "SELECT * FROM " . NF_FIELDMETA_TABLE_NAME . " WHERE `field_id` IN (" . implode( ',', array_map( 'intval', $field_ids ) ) . ")", ARRAY_A );
+		$data = array();
+		foreach ( $fieldmeta as $meta ) {
+			$meta_key = $meta['meta_key'];
+			$meta_value = $meta['meta_value'];
+			switch ( $meta['meta_key'] ) {
+				case 'type':
+					$data[ $meta['field_id'] ]['type'] = $meta_value;
+				break;
+				case 'fav_id':
+					$data[ $meta['field_id'] ]['fav_id'] = $meta_value;
+				break;
+				case 'def_id':
+					$data[ $meta['field_id'] ]['def_id'] = $meta_value;
+				break;
 			}
+
+			$data[ $meta['field_id'] ]['meta'][ $meta_key ] = maybe_unserialize( $meta_value );
 		}
+
+		foreach ( $fields as $field ) {
+			$data[ $field['id'] ]['form_id'] = $this->form_id;
+			$data[ $field['id'] ]['order'] = $field['order'];
+
+			Ninja_Forms()->field_data[ $field['id'] ] = $this->form_id;
+		}
+
+		$this->fields = $fields;
+		uasort( $data, array( $this, 'sort_by_order' ) );
+		$this->field_data = $data;
+
+	}
+
+	public function sort_by_order( $a, $b ) {
+		return $a['order'] - $b['order'];
 	}
 
 	/**
@@ -154,9 +186,14 @@ class NF_Form {
 	 * @param mixed $value
 	 * @return bool
 	 */
-	public function update_setting( $setting, $value ) {
-		$this->settings[ $setting ] = $value;
-		nf_update_object_meta( $this->form_id, $setting, $value );
+	public function update_setting( $setting, $value, $form_id = '' ) {
+		if ( '' == $form_id ) {
+			$this->settings[ $setting ] = $value;
+			nf_update_object_meta( $this->form_id, $setting, $value );			
+		} else {
+			nf_update_object_meta( $form_id, $setting, $value );
+		}
+
 		return true;
 	}
 
@@ -207,6 +244,10 @@ class NF_Form {
 		nf_delete_object( $this->form_id );
 		// Delete any fields on this form.
 		$wpdb->query($wpdb->prepare( "DELETE FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE form_id = %d", $this->form_id ) );
+	}
+
+	public function field( $id = '' ) {
+		return Ninja_Forms()->field( $id );
 	}
 
 }

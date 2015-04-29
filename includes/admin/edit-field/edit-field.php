@@ -1,7 +1,9 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 function ninja_forms_edit_field( $field_id, $new = false ){
 	global $wpdb, $ninja_forms_fields;
-
+	// echo "<pre>";
+	// print_r( $field_id );
+	// echo "</pre>";
 	do_action( 'ninja_forms_edit_field_before_li', $field_id, $new );
 	do_action( 'ninja_forms_edit_field_li', $field_id, $new );
 	do_action( 'ninja_forms_edit_field_after_li', $field_id, $new );
