@@ -246,8 +246,21 @@ class NF_Form {
 		$wpdb->query($wpdb->prepare( "DELETE FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE form_id = %d", $this->form_id ) );
 	}
 
+
 	public function field( $id = '' ) {
 		return Ninja_Forms()->field( $id );
 	}
+
+    /**
+     * Delete the cached form object (transient)
+     *
+     * @access public
+     * @since 2.9.12
+     */
+    public function dumpCache()
+    {
+        delete_transient( 'nf_form_' . $this->form_id );
+    }
+
 
 }
