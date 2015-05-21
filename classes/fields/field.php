@@ -19,7 +19,8 @@ class NF_Field
 	var $def_id = '';
 	var $meta = array();
 
-	function __construct( $id = '' ) {
+	function __construct( $id = '' )
+	{
 
 	}
 
@@ -28,7 +29,8 @@ class NF_Field
 	 * @since 3.0
 	 * @return void
 	 */
-	public function set_id( $id = '' ) {
+	public function set_id( $id = '' )
+	{
 		$this->id = $id;
 		$this->populate();
 	}
@@ -38,13 +40,14 @@ class NF_Field
 	 * @since 3.0
 	 * @return void
 	 */
-	public function populate() {
+	public function populate()
+	{
 		global $wpdb;
 
 		if ( ! empty ( Ninja_Forms()->field_data[ $this->id ] ) ) {
 			$form_id = Ninja_Forms()->field_data[ $this->id ];
 			$field_data = Ninja_Forms()->form( $form_id )->field_data[ $this->id ];
-		} else if ( false != ( $field_data = get_transient( 'nf_field_' . $this->id ) ) ) { 
+		} else if ( is_object( ( $field_data = get_transient( 'nf_field_' . $this->id ) ) ) ) { 
 
 		} else {
 			$field_data = $this->fetch();
@@ -88,7 +91,8 @@ class NF_Field
 	 * @since  3.0
 	 * @return array
 	 */
-	public function fetch() {
+	public function fetch()
+	{
 		global $wpdb;
 		return $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".form_id as 'form_id', " . NF_FIELDS_TABLE_NAME . ".order as 'order', " . NF_FIELDMETA_TABLE_NAME . ".meta_key, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDMETA_TABLE_NAME . " JOIN " . NF_FIELDS_TABLE_NAME . " ON " . NF_FIELDS_TABLE_NAME . ".id = " . NF_FIELDMETA_TABLE_NAME . ".field_id WHERE field_id = %d", $this->id ), ARRAY_A );
 	}
@@ -97,14 +101,26 @@ class NF_Field
 	 * Get a specific field setting
 	 * @since  3.0
 	 * @param  string  $meta_key Name of the setting.
+	 * @param  string  $default What to return if nothing is found.
 	 * @return mixed
 	 */
-	public function get_setting( $meta_key ) {
+	public function get_setting( $meta_key, $default = false )
+	{
 		if ( isset ( $this->meta[ $meta_key ] ) ) {
 			return $this->meta[ $meta_key ];
 		} else {
-			return false;
+			return $default;
 		}
+	}
+
+	/**
+	 * Get all of our settings.
+	 * @since  3.0
+	 * @return array $this->meta
+	 */
+	public function get_all_settings()
+	{
+		return $this->meta;
 	}
 
 	/**
@@ -114,7 +130,8 @@ class NF_Field
 	 * @param  mixed   $meta_value Value of the setting being updated
 	 * @return void
 	 */
-	public function update_setting( $meta_key, $meta_value, $field_id = '' ) {
+	public function update_setting( $meta_key, $meta_value, $field_id = '' )
+	{
 		global $wpdb;
 		$update_cache = false;
 
@@ -144,7 +161,8 @@ class NF_Field
 	 * @param   int $field_id Optional: passing the field ID to update prevents populating the entire field object.
 	 * @return  void 
 	 */
-	public function update_order( $order, $field_id = '' ) {
+	public function update_order( $order, $field_id = '' )
+	{
 		global $wpdb;
 		$update_cache = false;
 
@@ -153,9 +171,7 @@ class NF_Field
 			$update_cache = true;
 		}
 
-		$test = $wpdb->update( NF_FIELDS_TABLE_NAME, array( 'order' => $order ), array( 'id' => $field_id ) );
-
-		var_dump( $test );
+		$wpdb->update( NF_FIELDS_TABLE_NAME, array( 'order' => $order ), array( 'id' => $field_id ) );
 
 		if ( $update_cache ) {
 			$this->order = $order;

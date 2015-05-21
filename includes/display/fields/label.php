@@ -7,8 +7,8 @@
 function ninja_forms_display_field_label( $field_id, $data ){
 	global $ninja_forms_fields, $ninja_forms_loading, $ninja_forms_processing;
 
-    $field = ninja_forms_get_field_by_id( $field_id );
-    $form_id = $field['form_id'];
+    $field = Ninja_Forms()->field( $field_id );
+    $form_id = $field->form_id;
 
 	$plugin_settings = nf_get_settings();
 

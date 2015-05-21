@@ -42,8 +42,8 @@ function nf_output_field_settings_html() {
 	$field_id = esc_html( $_REQUEST['field_id'] );
 	$data = isset ( $_REQUEST['data'] ) ? json_decode( stripslashes( $_REQUEST['data'] ), true ) : array();
 
-	$field = ninja_forms_get_field_by_id( $field_id );
-	$field_data = $field['data'];
+	$field = Ninja_Forms()->field( $field_id );
+	$field_data = $field->get_all_settings();
 	$data = wp_parse_args( $data, $field_data );
 
 	nf_output_registered_field_settings( $field_id, $data );
@@ -324,9 +324,9 @@ function ninja_forms_add_fav(){
 	$field_data = $_REQUEST['field_data'];
 	$field_id = absint( $_REQUEST['field_id'] );
 
-	$field_row = ninja_forms_get_field_by_id($field_id);
+	$field = Ninja_Forms()->field( $field_id );
 
-	$field_type = $field_row['type'];
+	$field_type = $field->type;
 	$form_id = 1;
 
 	$data = array();
@@ -619,12 +619,8 @@ function ninja_forms_list_terms_checkboxes( $field_id = '', $tax_name = '' ){
 	}
 
 	if ( $field_id != '' && $tax_name != '' ) {
-		$field = ninja_forms_get_field_by_id( $field_id );
-		if ( isset ( $field['data']['exclude_terms'] ) ) {
-			$exclude_terms = $field['data']['exclude_terms'];
-		} else {
-			$exclude_terms = '';
-		}
+		$field = Ninja_Forms()->field( $field_id );
+		$exclude_terms = $field->get_setting( 'exclude_terms', '' );
 
 		$terms = get_terms( $tax_name, array( 'hide_empty' => false ) );
 		if ( is_array ( $terms ) && !empty ( $terms ) ) {

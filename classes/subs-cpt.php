@@ -282,20 +282,24 @@ class NF_Subs_CPT {
 		// Compatibility with old field registration system. Can be removed when the new one is in place.
 		if ( isset ( $_GET['form_id'] ) && $_GET['form_id'] != '' ) {
 			$form_id = $_GET['form_id'];
-			if ( is_object( Ninja_Forms()->form( $this->form_id ) ) && is_array ( Ninja_Forms()->form( $this->form_id )->fields ) ) {
-				foreach ( Ninja_Forms()->form( $this->form_id )->fields as $field ) {
+			if ( is_object( Ninja_Forms()->form( $this->form_id ) ) && is_array ( Ninja_Forms()->form( $this->form_id )->get_fields() ) ) {
+				foreach ( Ninja_Forms()->form( $this->form_id )->get_fields() as $field ) {
 					$field_id = $field['id'];
-					$field_type = $field['type'];
-					if ( isset ( $ninja_forms_fields[ $field_type ] ) ) {
-						$reg_field = $ninja_forms_fields[ $field_type ];
+					$field = Ninja_Forms()->field( $field_id );
+					
+					$type = $field->type;
+					$admin_label = $field->get_setting( 'admin_label' );
+					$label = $field->get_setting( 'label' );
+					if ( isset ( $ninja_forms_fields[ $type ] ) ) {
+						$reg_field = $ninja_forms_fields[ $type ];
 						$process_field = $reg_field['process_field'];
 					} else {
 						$process_field = false;
 					}
-					if ( isset ( $field['data']['admin_label'] ) && ! empty ( $field['data']['admin_label'] ) ) {
-						$label = $field['data']['admin_label'];
-					} else if ( isset ( $field['data']['label'] ) ) {
-						$label = $field['data']['label'];
+					if ( ! empty ( $admin_label ) ) {
+						$label = $admin_label;
+					} else if ( ! empty ( $label ) ) {
+						$label = $label;
 					} else {
 						$label = '';
 					}
@@ -303,7 +307,7 @@ class NF_Subs_CPT {
 					if ( strlen( $label ) > 140 )
 						$label = substr( $label, 0, 140 );
 
-					if ( isset ( $field['data']['label'] ) && $process_field )
+					if ( ! empty ( $label ) && $process_field )
 						$cols[ 'form_' . $form_id . '_field_' . $field_id ] = $label;
 				}
 			}
@@ -349,8 +353,8 @@ class NF_Subs_CPT {
            if( strpos( $vars['orderby'], 'form_' ) !== false ) {
            		$args = explode( '_', $vars['orderby'] );
            		$field_id = $args[3];
-
-           		if ( isset ( Ninja_Forms()->form( $this->form_id )->fields[ $field_id ]['data']['num_sort'] ) && Ninja_Forms()->form( $this->form_id )->fields[ $field_id ]['data']['num_sort'] == 1 ) {
+           		$num_sort = Ninja_Forms()->field( $field_id )->get_setting( 'num_sort' );
+           		if ( $num_sort == 1 ) {
            			$orderby = 'meta_value_num';
            		} else {
            			$orderby = 'meta_value';
@@ -436,10 +440,10 @@ class NF_Subs_CPT {
 
 				$field_id = str_replace( 'form_' . $form_id . '_field_', '', $column );
 				//if ( apply_filters( 'nf_add_sub_value', Ninja_Forms()->field( $field_id )->type->add_to_sub, $field_id ) ) {
-					$field = Ninja_Forms()->form( $form_id )->fields[ $field_id ];
-					$field_type = $field['type'];
-					if ( isset ( $ninja_forms_fields[ $field_type ] ) ) {
-						$reg_field = $ninja_forms_fields[ $field_type ];
+					$field = Ninja_Forms()->field( $field_id );
+					$type = $field->type;
+					if ( isset ( $ninja_forms_fields[ $type ] ) ) {
+						$reg_field = $ninja_forms_fields[ $type ];
 					} else {
 						$reg_field = array();
 					}
@@ -878,7 +882,7 @@ class NF_Subs_CPT {
 		global $ninja_forms_fields;
 		// Get all the post meta
 		$form_id = Ninja_Forms()->sub( $post->ID )->form_id;
-		$fields = Ninja_Forms()->form( $this->form_id )->fields;
+		$fields = Ninja_Forms()->form( $this->form_id )->get_fields();
 		
 		if ( isset ( $_REQUEST['ref'] ) ) {
 			$ref = $_REQUEST['ref'];
@@ -900,14 +904,20 @@ class NF_Subs_CPT {
 				<tbody id="the-list">
 					<?php
 					// Loop through our post meta and keep our field values
-					foreach ( $fields as $field_id => $field ) {
+					foreach ( $fields as $field ) {
+						$field_id = $field['id'];
+						$field = Ninja_Forms()->field( $field_id );
+						
 						$user_value = Ninja_Forms()->sub( $post->ID )->get_field( $field_id );
-						$field_type = $field['type'];
+						$field_type = $field->type;
+						$admin_label = $field->get_setting( 'admin_label' );
+						$label = $field->get_setting( 'label' );
 
-						if ( isset ( $field['data']['admin_label'] ) && $field['data']['admin_label'] != '' ) {
-							$label = $field['data']['admin_label'];
-						} else if ( isset ( $field['data']['label'] ) ) {
-							$label = $field['data']['label'];
+
+						if ( ! empty ( $admin_label ) ) {
+							$label = $admin_label;
+						} else if ( ! empty ( $label ) ) {
+							$label = $label;
 						} else {
 							$label = '';
 						}
@@ -919,7 +929,7 @@ class NF_Subs_CPT {
 							$process_field = false;
 						}
 
-						if ( isset ( Ninja_Forms()->form( $this->form_id )->fields[ $field_id ] ) && $process_field ) {
+						if ( $process_field ) {
 							?>
 							<tr>
 								<td class="left"><?php echo $label; ?></td>

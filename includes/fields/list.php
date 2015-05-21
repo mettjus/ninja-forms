@@ -689,19 +689,18 @@ add_action( 'ninja_forms_display_pre_init', 'ninja_forms_field_filter_list_data'
  * @return void
  */
 function nf_field_list_edit_sub_value( $field_id, $user_value, $field ) {
-	$label = $field['data']['label'];
-	$label_pos = $field['data']['label_pos'];
-	$selected_value = $user_value;
-	$options = $field['data']['list']['options'];
-
-	$field_class = isset( $field['data']['class'] ) ? $field['data']['class'] : '';
 	
-	if( isset( $field['data']['list_show_value'] ) ){
-		$list_show_value = $field['data']['list_show_value'];
-	}else{
-		$list_show_value = 0;
-	}
-	switch( $field['data']['list_type'] ) {
+	$label = $field->get_setting( 'label' );
+	$label_pos = $field->get_setting( 'label_pos' );
+	$selected_value = $user_value;
+	$options = $field->get_setting( 'list' );
+	$options = $options['options'];
+	$field_class = $field->get_setting( 'class' );
+	$field_class = ! empty ( $field_class ) ? $field_class : '';
+	$list_show_value = $field->get_setting( 'list_show_value', 0 );
+	$list_type = $field->get_setting( 'list_type' );
+
+	switch( $list_type ) {
 		case 'dropdown':
 			?>
 			<select name="fields[<?php echo $field_id; ?>]" id="ninja_forms_field_<?php echo $field_id;?>" class="<?php echo $field_class;?>" rel="<?php echo $field_id;?>">

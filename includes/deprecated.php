@@ -1006,9 +1006,7 @@ function ninja_forms_get_field_by_id( $field_id ) {
 function ninja_forms_get_fields_by_form_id( $form_id, $orderby = 'ORDER BY `order` ASC' ) {
 	$return = array();
 	$x = 0;
-	// echo "<pre>";
-	// print_r( Ninja_Forms()->form( $form_id )->field_data );
-	// echo "</pre>";
+
 	foreach ( Ninja_Forms()->form( $form_id )->field_data as $field_id => $field ) {
 		$return[ $x ]['id'] = $field_id;
 		$return[ $x ]['form_id'] = $field['form_id'];

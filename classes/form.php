@@ -30,6 +30,12 @@ class NF_Form {
 	var $fields = array();
 
 	/**
+	 * @var field_data - Store our field meta values
+	 * @since  3.0
+	 */
+	var $field_data = array();
+
+	/**
 	 * @var errors - Form errors
 	 * @since 2.7
 	 */
@@ -257,9 +263,19 @@ class NF_Form {
      * @access public
      * @since 2.9.12
      */
-    public function dumpCache()
+    public function dump_cache()
     {
         delete_transient( 'nf_form_' . $this->form_id );
+    }
+
+    /**
+     * Return all field ids
+     * @access public
+     * @since  3.0
+     */
+    public function get_fields()
+    {
+    	return $this->fields;
     }
 
 

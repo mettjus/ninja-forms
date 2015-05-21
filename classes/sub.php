@@ -109,8 +109,8 @@ class NF_Sub {
 
 			if ( strpos( $key, '_field_' ) !== false ) {
 				$field_id = str_replace( '_field_', '', $key );
-				$field = ninja_forms_get_field_by_id( $field_id );
-				$field_type = $field['type'];
+				$field = Ninja_Forms()->field( $field_id );
+				$field_type = $field->type;
 
 				// Check to see if our field type has been set as a "process_field".
 				if ( isset ( $ninja_forms_fields[ $field_type ] ) ) {
