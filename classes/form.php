@@ -174,7 +174,10 @@ class NF_Form {
 	 * @since 2.7
 	 * @return string $setting
 	 */
-	public function get_setting( $setting ) {
+	public function get_setting( $setting, $bypass_cache = false ) {
+		if ( $bypass_cache ) {
+			return nf_get_object_meta_value( $this->form_id, 'last_sub' );
+		}
 		if ( isset ( $this->settings[ $setting ] ) ) {
 			return $this->settings[ $setting ];
 		} else {
@@ -261,11 +264,22 @@ class NF_Form {
      * Delete the cached form object (transient)
      *
      * @access public
-     * @since 2.9.12
+     * @since 2.9.17
      */
     public function dump_cache()
     {
         delete_transient( 'nf_form_' . $this->form_id );
+    }
+
+    /**
+     * Deprecated wrapper for dump_cache()
+     *
+     * @access public
+     * @since 2.9.12
+     */
+    public function dump_cache()
+    {
+        $this->dump_cache();
     }
 
     /**
