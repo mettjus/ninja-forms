@@ -277,7 +277,7 @@ class NF_Form {
      * @access public
      * @since 2.9.12
      */
-    public function dump_cache()
+    public function dumpCache()
     {
         $this->dump_cache();
     }

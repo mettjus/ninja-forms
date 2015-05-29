@@ -88,6 +88,11 @@ class Ninja_Forms {
 	public static function instance() {
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Ninja_Forms ) ) {
 			self::$instance = new Ninja_Forms;
+			/*
+			Register our autoloader
+			 */
+			spl_autoload_register( array( self::$instance, 'autoloader' ) );
+
 			self::$instance->setup_constants();
 			self::$instance->includes();
 
@@ -110,6 +115,11 @@ class Ninja_Forms {
 		}
 
 		return self::$instance;
+	}
+
+	public function autoloader( $classname )
+	{
+
 	}
 
 	/**
