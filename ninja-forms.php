@@ -75,6 +75,11 @@ class Ninja_Forms {
 	var $field_data = array();
 
 	/**
+	 * @var use_form_cache
+	 */
+	var $use_form_cache = false;
+
+	/**
 	 * Main Ninja_Forms Instance
 	 *
 	 * Insures that only one instance of Ninja_Forms exists in memory at any one
@@ -85,7 +90,8 @@ class Ninja_Forms {
 	 * @staticvar array $instance
 	 * @return The highlander Ninja_Forms
 	 */
-	public static function instance() {
+	public static function instance()
+	{
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Ninja_Forms ) ) {
 			self::$instance = new Ninja_Forms;
 			/*
@@ -281,14 +287,19 @@ class Ninja_Forms {
 		if ( isset( self::$instance->$form_var ) )
 			return self::$instance->$form_var;
 		
-		// Check to see if we have a transient object stored for this form.
-		if ( is_object ( ( $form_obj = get_transient( 'nf_form_' . $form_id ) ) ) ) {
-			self::$instance->$form_var = $form_obj;
+		if ( $this->use_form_cache ) {
+			// Check to see if we have a transient object stored for this form.
+			if ( is_object ( ( $form_obj = get_transient( 'nf_form_' . $form_id ) ) ) ) {
+				self::$instance->$form_var = $form_obj;
+			} else {
+				// Create a new form object for this form.
+				self::$instance->$form_var = new NF_Form( $form_id );
+				// Save it into a transient.
+				set_transient( 'nf_form_' . $form_id, self::$instance->$form_var, DAY_IN_SECONDS );
+			}
 		} else {
 			// Create a new form object for this form.
 			self::$instance->$form_var = new NF_Form( $form_id );
-			// Save it into a transient.
-			set_transient( 'nf_form_' . $form_id, self::$instance->$form_var, DAY_IN_SECONDS );
 		}
 
 		return self::$instance->$form_var;

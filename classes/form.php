@@ -120,7 +120,7 @@ class NF_Form {
 	public function update_fields() {
 		global $wpdb;
 		$field_ids = array();
-		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT wp_nf_fields.id as 'id', wp_nf_fields.order as 'order' FROM " . NF_FIELDS_TABLE_NAME . " WHERE form_id = %d ORDER BY wp_nf_fields.order ASC", $this->form_id ), ARRAY_A );
+		$fields = $wpdb->get_results( $wpdb->prepare( "SELECT wp_nf_fields.id as 'id', wp_nf_fields.order as 'order', wp_nf_fields.type as 'type' FROM " . NF_FIELDS_TABLE_NAME . " WHERE form_id = %d ORDER BY wp_nf_fields.order ASC", $this->form_id ), ARRAY_A );
 		// var_dump( $wpdb->prepare( "SELECT wp_nf_fields.id as 'id', wp_nf_fields.order as 'order' FROM " . NF_FIELDS_TABLE_NAME . " WHERE form_id = %d ORDER BY wp_nf_fields.order ASC", $this->form_id ) );
 		// echo "<pre>";
 		// print_r( $fields );
@@ -154,7 +154,7 @@ class NF_Form {
 			$data[ $field['id'] ]['form_id'] = $this->form_id;
 			$data[ $field['id'] ]['order'] = $field['order'];
 
-			Ninja_Forms()->field_data[ $field['id'] ] = $this->form_id;
+			// Ninja_Forms()->field_data[ $field['id'] ] = $this->form_id;
 		}
 
 		$this->fields = $fields;

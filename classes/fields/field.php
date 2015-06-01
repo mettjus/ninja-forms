@@ -44,19 +44,25 @@ class NF_Field
 	{
 		global $wpdb;
 
-		if ( ! empty ( Ninja_Forms()->field_data[ $this->id ] ) ) {
-			$form_id = Ninja_Forms()->field_data[ $this->id ];
-			$field_data = Ninja_Forms()->form( $form_id )->field_data[ $this->id ];
-		} else if ( is_object( ( $field_data = get_transient( 'nf_field_' . $this->id ) ) ) ) { 
+		// if ( ! empty ( Ninja_Forms()->field_data[ $this->id ] ) ) {
+		// 	$form_id = Ninja_Forms()->field_data[ $this->id ];
+		// 	$field_data = Ninja_Forms()->form( $form_id )->field_data[ $this->id ];
+		// } else if ( is_object( ( $field_data = get_transient( 'nf_field_' . $this->id ) ) ) ) { 
 
-		} else {
+		// } else {
 			$field_data = $this->fetch();
+			echo "<pre>";
+			print_r( $field_data );
+			echo "</pre>";
 			foreach ( $field_data as $d ) {
 				if ( ! isset ( $field_data['form_id'] ) ) {
 					$field_data['form_id'] = $d['form_id'];
 				}
 				if ( ! isset ( $field_data['order'] ) ) {
 					$field_data['order'] = $d['order'];
+				}
+				if ( ! isset ( $field_data['type'] ) ) {
+					$field_data['type'] = $d['type'];
 				}
 				switch ( $d['meta_key'] ) {
 					case 'type':
@@ -71,8 +77,8 @@ class NF_Field
 				}
 				$field_data['meta'][ $d[ 'meta_key' ] ] = maybe_unserialize( $d['meta_value'] );
 			}
-			set_transient( 'nf_field_' . $this->id, $field_data );
-		}
+			// set_transient( 'nf_field_' . $this->id, $field_data );
+		// }
 
 		if ( ! empty ( $field_data['form_id'] ) ) {
 			$this->form_id = $field_data['form_id'];
@@ -94,7 +100,7 @@ class NF_Field
 	public function fetch()
 	{
 		global $wpdb;
-		return $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".form_id as 'form_id', " . NF_FIELDS_TABLE_NAME . ".order as 'order', " . NF_FIELDMETA_TABLE_NAME . ".meta_key, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDMETA_TABLE_NAME . " JOIN " . NF_FIELDS_TABLE_NAME . " ON " . NF_FIELDS_TABLE_NAME . ".id = " . NF_FIELDMETA_TABLE_NAME . ".field_id WHERE field_id = %d", $this->id ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( "SELECT " . NF_FIELDS_TABLE_NAME . ".form_id as 'form_id', " . NF_FIELDS_TABLE_NAME . ".order as 'order', " . NF_FIELDS_TABLE_NAME . ".type as 'type', " . NF_FIELDMETA_TABLE_NAME . ".meta_key, " . NF_FIELDMETA_TABLE_NAME . ".meta_value FROM " . NF_FIELDMETA_TABLE_NAME . " JOIN " . NF_FIELDS_TABLE_NAME . " ON " . NF_FIELDS_TABLE_NAME . ".id = " . NF_FIELDMETA_TABLE_NAME . ".field_id WHERE field_id = %d", $this->id ), ARRAY_A );
 	}
 
 	/**
@@ -176,5 +182,10 @@ class NF_Field
 		if ( $update_cache ) {
 			$this->order = $order;
 		}
+	}
+
+	public function output_edit_html()
+	{
+		echo $this->id;
 	}
 }

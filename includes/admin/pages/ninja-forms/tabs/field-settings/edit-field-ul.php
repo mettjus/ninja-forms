@@ -7,12 +7,17 @@ function ninja_forms_edit_field_output_ul( $form_id ){
 		<a href="#" class="button-secondary nf-save-spinner" style="display:none;" disabled><span class="spinner nf-save-spinner" style="float:left;"></span></a>
 		<ul class="menu ninja-forms-field-list" id="ninja_forms_field_list">
 	  		<?php
-				if( is_array( Ninja_Forms()->form( $form_id )->field_ids ) AND !empty( Ninja_Forms()->form( $form_id )->field_ids ) ){
-					foreach( Ninja_Forms()->form( $form_id )->field_ids as $field_id ){
+			// echo "<pre>";
+			// print_r( Ninja_Forms()->form( $form_id )->fields );
+			// echo "</pre>";
+				if( is_array( Ninja_Forms()->form( $form_id )->fields ) AND !empty( Ninja_Forms()->form( $form_id )->fields ) ){
+					
+					foreach( Ninja_Forms()->form( $form_id )->fields as $field ){
 						// echo "<pre>";
 						// print_r( $field );
 						// echo "</pre>";
-						ninja_forms_edit_field( $field_id );
+						// ninja_forms_edit_field( $field['id'] );
+						Ninja_Forms()->field( $field['id'] )->output_edit_html();
 					}
 				}
 			?>
