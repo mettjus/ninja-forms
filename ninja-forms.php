@@ -159,7 +159,7 @@ class Ninja_Forms {
 		// Get our fields up and running.
 		// Register our notification types
 		Ninja_Forms()->field_types['text'] = new NF_Fields_Text();
-		Ninja_Forms()->field_types['submit'] = new NF_Fields_Submit();
+		Ninja_Forms()->field_types['submitbutton'] = new NF_Fields_SubmitButton();
 
 		Ninja_Forms()->field_types = apply_filters( 'nf_field_types', Ninja_Forms()->field_types );
 
@@ -563,25 +563,6 @@ class Ninja_Forms {
 		require_once( NINJA_FORMS_DIR . "/includes/admin/register-screen-help.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/output-tab-metabox.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/form-preview.php" );
-
-		//Edit Field Functions
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/edit-field.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/label.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/placeholder.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/hr.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/req.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/custom-class.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/help.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/desc.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/li.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/remove-button.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/save-button.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/calc.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/user-info-fields.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/post-meta-values.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/input-limit.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/sub-settings.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/admin/edit-field/autocomplete-off.php" );
 
 		/* * * * ninja-forms - Main Form Editing Page
 

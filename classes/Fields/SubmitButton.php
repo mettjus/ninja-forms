@@ -9,7 +9,7 @@
  * @since       3.0
 */
 
-class NF_Fields_Submit extends NF_Fields_BaseField
+class NF_Fields_SubmitButton extends NF_Fields_BaseField
 {
 
 	/**
@@ -17,22 +17,14 @@ class NF_Fields_Submit extends NF_Fields_BaseField
 	 * @since 3.0
 	 */
 	function __construct() {
-		$this->name = __( 'Submit', 'ninja-forms' );
+		parent::__construct();
+		$this->name = __( 'Submit Button', 'ninja-forms' );
 
-		$this->edit_settings = array(
-			'restrictions' => array(
-				array(
-					'type' => 'checkbox',
-					'name' => 'email',
-					'label' => __( 'Validate as an email address? (Field must be required)', 'ninja-forms' ),
-				),
-				array(
-					'type' => 'checkbox',
-					'label' => __( 'Disable Input', 'ninja-forms' ),
-					'name' => 'disable_input',
-				),
-			),
-		);
+		unset( $this->edit_sections['calculations'] );
+		unset( $this->edit_sections['restrictions'] );
+
+		unset( $this->edit_settings['basic']['label_pos'] );
+		unset( $this->edit_settings['advanced']['admin_label'] );
 
 	}
 

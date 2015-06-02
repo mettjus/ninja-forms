@@ -17,7 +17,7 @@ function ninja_forms_edit_field_output_ul( $form_id ){
 						// print_r( $field );
 						// echo "</pre>";
 						// ninja_forms_edit_field( $field['id'] );
-						Ninja_Forms()->field( $field['id'] )->output_edit_html();
+						Ninja_Forms()->field( $field['id'] )->output_edit_li();
 					}
 				}
 			?>

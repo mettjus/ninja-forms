@@ -184,8 +184,13 @@ class NF_Fields_FieldObject
 		}
 	}
 
-	public function output_edit_html()
+	public function output_edit_li()
 	{
-		Ninja_Forms()->field_types[ $this->type ]->output_edit_html( $this );
+		Ninja_Forms()->field_types[ $this->type ]->output_edit_li( $this );
+	}
+
+	public function output_edit_inside()
+	{
+		Ninja_Forms()->field_types[ $this->type ]->output_edit_inside( $this );
 	}
 }

@@ -46,7 +46,8 @@ function nf_output_field_settings_html() {
 	$field_data = $field->get_all_settings();
 	$data = wp_parse_args( $data, $field_data );
 
-	nf_output_registered_field_settings( $field_id, $data );
+	$field->meta = $data;
+	$field->output_edit_inside();
 
 	die();
 }
