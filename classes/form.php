@@ -136,9 +136,6 @@ class NF_Form {
 			$meta_key = $meta['meta_key'];
 			$meta_value = $meta['meta_value'];
 			switch ( $meta['meta_key'] ) {
-				case 'type':
-					$data[ $meta['field_id'] ]['type'] = $meta_value;
-				break;
 				case 'fav_id':
 					$data[ $meta['field_id'] ]['fav_id'] = $meta_value;
 				break;
@@ -153,6 +150,7 @@ class NF_Form {
 		foreach ( $fields as $field ) {
 			$data[ $field['id'] ]['form_id'] = $this->form_id;
 			$data[ $field['id'] ]['order'] = $field['order'];
+			$data[ $field['id'] ]['type'] = $field['type'];
 
 			// Ninja_Forms()->field_data[ $field['id'] ] = $this->form_id;
 		}

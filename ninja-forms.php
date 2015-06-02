@@ -123,9 +123,16 @@ class Ninja_Forms {
 		return self::$instance;
 	}
 
-	public function autoloader( $classname )
+	public function autoloader( $class_name )
 	{
-
+		if ( false !== strpos( $class_name, 'NF_' ) ) {
+			$class_name = str_replace( 'NF_', '', $class_name );
+			$classes_dir = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR;
+			$class_file = str_replace( '_', DIRECTORY_SEPARATOR, $class_name ) . '.php';
+			if ( file_exists( $classes_dir . $class_file ) ) {
+				require_once $classes_dir . $class_file;
+			} 
+		}
 	}
 
 	/**
@@ -147,11 +154,12 @@ class Ninja_Forms {
 		self::$instance->notifications = new NF_Notifications();
 
 		// Setup our main field method
-		self::$instance->field = new NF_Field();
+		self::$instance->field = new NF_Fields_FieldObject();
 
 		// Get our fields up and running.
 		// Register our notification types
-		Ninja_Forms()->field_types['_text'] = require_once( NF_PLUGIN_DIR . 'classes/fields/types/text.php' );
+		Ninja_Forms()->field_types['text'] = new NF_Fields_Text();
+		Ninja_Forms()->field_types['submit'] = new NF_Fields_Submit();
 
 		Ninja_Forms()->field_types = apply_filters( 'nf_field_types', Ninja_Forms()->field_types );
 
@@ -445,10 +453,6 @@ class Ninja_Forms {
 		require_once( NF_PLUGIN_DIR . 'classes/notifications-table.php' );
 		// Include our base notification type
 		require_once( NF_PLUGIN_DIR . 'classes/notification-base-type.php' );
-		// Include our base field type
-		require_once( NF_PLUGIN_DIR . 'classes/fields/types/base-field.php' );
-		// Include our field object
-		require_once( NF_PLUGIN_DIR . 'classes/fields/field.php' );
 
 		if ( is_admin () ) {
 			// Include our step processing stuff if we're in the admin.

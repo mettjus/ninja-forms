@@ -9,7 +9,7 @@
  * @since       3.0
 */
 
-class NF_Field_Text extends NF_Field_Base
+class NF_Fields_Submit extends NF_Fields_BaseField
 {
 
 	/**
@@ -17,7 +17,7 @@ class NF_Field_Text extends NF_Field_Base
 	 * @since 3.0
 	 */
 	function __construct() {
-		$this->name = __( 'Single Line Text', 'ninja-forms' );
+		$this->name = __( 'Submit', 'ninja-forms' );
 
 		$this->edit_settings = array(
 			'restrictions' => array(
@@ -30,18 +30,6 @@ class NF_Field_Text extends NF_Field_Base
 					'type' => 'checkbox',
 					'label' => __( 'Disable Input', 'ninja-forms' ),
 					'name' => 'disable_input',
-				),
-			),
-			'advanced' => array(
-				array(
-					'type' => 'checkbox',
-					'name' => 'datepicker',
-					'label' => __( 'Datepicker', 'ninja-forms' ),
-				),
-				array(
-					'type' => 'checkbox',
-					'label' => __( 'This is the user\'s state', 'ninja-forms' ),
-					'name' => 'user_state',
 				),
 			),
 		);
@@ -120,5 +108,3 @@ class NF_Field_Text extends NF_Field_Base
 		 */
 	}
 }
-
-return new NF_Field_Text();

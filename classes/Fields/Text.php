@@ -1,10 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 /**
- * Base Field Type Class.
- * This class is used as a base for creating field types.
- *
- * It should be extended by new field types, and isn't instantiated itself.
- *
+ * Text Field Type Class.
+ * 
  * @package     Ninja Forms
  * @subpackage  Classes/Fields
  * @copyright   Copyright (c) 2015, WPNINJAS
@@ -12,16 +9,42 @@
  * @since       3.0
 */
 
-abstract class NF_Field_Base
+class NF_Fields_Text extends NF_Fields_BaseField
 {
-	var $sidebar = 'template_fields';
-	var $edit_options = array();
-	var $edit_settings = array();
+
 	/**
 	 * Get things rolling
 	 * @since 3.0
 	 */
 	function __construct() {
+		$this->name = __( 'Single Line Text', 'ninja-forms' );
+
+		$this->edit_settings = array(
+			'restrictions' => array(
+				array(
+					'type' => 'checkbox',
+					'name' => 'email',
+					'label' => __( 'Validate as an email address? (Field must be required)', 'ninja-forms' ),
+				),
+				array(
+					'type' => 'checkbox',
+					'label' => __( 'Disable Input', 'ninja-forms' ),
+					'name' => 'disable_input',
+				),
+			),
+			'advanced' => array(
+				array(
+					'type' => 'checkbox',
+					'name' => 'datepicker',
+					'label' => __( 'Datepicker', 'ninja-forms' ),
+				),
+				array(
+					'type' => 'checkbox',
+					'label' => __( 'This is the user\'s state', 'ninja-forms' ),
+					'name' => 'user_state',
+				),
+			),
+		);
 
 	}
 
@@ -32,12 +55,6 @@ abstract class NF_Field_Base
 	 * @return void
 	 */
 	public function edit( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	public function edit_save( $id ) {
 		/*
 		This space left intentionally blank
 		 */
@@ -102,4 +119,5 @@ abstract class NF_Field_Base
 		This space left intentionally blank
 		 */
 	}
+
 }

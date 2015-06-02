@@ -9,7 +9,7 @@
  * @since       3.0
 */
 
-class NF_Field
+class NF_Fields_FieldObject
 {
 	var $id = '';
 	var $type = '';
@@ -51,9 +51,9 @@ class NF_Field
 
 		// } else {
 			$field_data = $this->fetch();
-			echo "<pre>";
-			print_r( $field_data );
-			echo "</pre>";
+			// echo "<pre>";
+			// print_r( $field_data );
+			// echo "</pre>";
 			foreach ( $field_data as $d ) {
 				if ( ! isset ( $field_data['form_id'] ) ) {
 					$field_data['form_id'] = $d['form_id'];
@@ -156,7 +156,7 @@ class NF_Field
 		}
 
 		if ( $update_cache ) {
-			$this->setting[ $meta_key ] = $meta_value;
+			$this->meta[ $meta_key ] = $meta_value;
 		}
 	}
 
@@ -186,6 +186,6 @@ class NF_Field
 
 	public function output_edit_html()
 	{
-		echo $this->id;
+		Ninja_Forms()->field_types[ $this->type ]->output_edit_html( $this );
 	}
 }
