@@ -105,12 +105,9 @@ class Ninja_Forms {
 			// Start our submissions custom post type class
 			self::$instance->subs_cpt = new NF_Subs_CPT();
 
-			// Add our registration class object
-			self::$instance->register = new NF_Register();
-
 			// The forms variable won't be interacted with directly.
 			// Instead, the forms() methods will act as wrappers for it.
-			self::$instance->forms = new NF_Forms();
+			self::$instance->forms = new NF_Forms_Collection();
 
 			register_activation_hook( __FILE__, 'ninja_forms_activation' );
 			add_action( 'plugins_loaded', array( self::$instance, 'load_lang' ) );
@@ -148,7 +145,7 @@ class Ninja_Forms {
 
 		// The subs variable won't be interacted with directly.
 		// Instead, the subs() methods will act as wrappers for it.
-		self::$instance->subs = new NF_Subs();
+		self::$instance->subs = new NF_Subs_Collection();
 
 		// Register our action types
 		Ninja_Forms()->action_types['email'] = new NF_Actions_Email();
@@ -178,8 +175,8 @@ class Ninja_Forms {
 		// Get our step processor up and running.
 		// We only need this in the admin.
 		if ( is_admin() ) {
-			self::$instance->step_processing = new NF_Step_Processing();
-			self::$instance->download_all_subs = new NF_Download_All_Subs();
+			self::$instance->step_processing = new NF_StepProcessing();
+			self::$instance->download_all_subs = new NF_Subs_DownloadAll();
 		}
 
 		// Fire our Ninja Forms init action.
@@ -271,13 +268,13 @@ class Ninja_Forms {
 		// Check to see if an object for this sub already exists.
 		// Create one if it doesn't exist.
 		if ( ! isset( self::$instance->$sub_var ) )
-			self::$instance->$sub_var = new NF_Sub( $sub_id );
+			self::$instance->$sub_var = new NF_Subs_SubObject( $sub_id );
 
 		return self::$instance->$sub_var;
 	}
 
 	/**
-	 * Function that acts as a wrapper for our subs_var - NF_Subs() class.
+	 * Function that acts as a wrapper for our subs_var - NF_Subs_Collection() class.
 	 * It doesn't set a sub_id and can be used to interact with methods that affect mulitple submissions
 	 *
 	 * @access public
@@ -289,7 +286,7 @@ class Ninja_Forms {
 	}
 
 	/**
-	 * Function that acts as a wrapper for our form_var - NF_Form() class.
+	 * Function that acts as a wrapper for our form_var - NF_Forms_FormObject() class.
 	 * It sets the form_id and then returns the instance, which is now using the
 	 * proper form id
 	 *
@@ -312,20 +309,20 @@ class Ninja_Forms {
 				self::$instance->$form_var = $form_obj;
 			} else {
 				// Create a new form object for this form.
-				self::$instance->$form_var = new NF_Form( $form_id );
+				self::$instance->$form_var = new NF_Forms_FormObject( $form_id );
 				// Save it into a transient.
 				set_transient( 'nf_form_' . $form_id, self::$instance->$form_var, DAY_IN_SECONDS );
 			}
 		} else {
 			// Create a new form object for this form.
-			self::$instance->$form_var = new NF_Form( $form_id );
+			self::$instance->$form_var = new NF_Forms_FormObject( $form_id );
 		}
 
 		return self::$instance->$form_var;
 	}
 
 	/**
-	 * Function that acts as a wrapper for our field_var - NF_Form() class.
+	 * Function that acts as a wrapper for our field_var - NF_Fields_FieldObject() class.
 	 * It sets the field_id and then returns the instance, which is now using the
 	 * proper field id
 	 *
@@ -343,7 +340,7 @@ class Ninja_Forms {
 	}
 
 	/**
-	 * Function that acts as a wrapper for our forms_var - NF_Form() class.
+	 * Function that acts as a wrapper for our forms_var - NF_Forms_Collection() class.
 	 *
 	 * @access public
 	 * @since 2.9
@@ -442,40 +439,15 @@ class Ninja_Forms {
 	 * @return void
 	 */
 	private function includes() {
-		// Include our sub object.
-		require_once( NF_PLUGIN_DIR . 'classes/sub.php' );
-		// Include our subs object.
-		require_once( NF_PLUGIN_DIR . 'classes/subs.php' );
-		// Include our subs CPT.
-		require_once( NF_PLUGIN_DIR . 'classes/subs-cpt.php' );
-		// Include our form object.
-		require_once( NF_PLUGIN_DIR . 'classes/form.php' );
-		// Include our form sobject.
-		require_once( NF_PLUGIN_DIR . 'classes/forms.php' );
 		// Include our 'nf_action' watcher.
 		require_once( NF_PLUGIN_DIR . 'includes/actions.php' );
-		// Include our action table object
-		require_once( NF_PLUGIN_DIR . 'classes/notifications-table.php' );
 
 		if ( is_admin () ) {
 			// Include our step processing stuff if we're in the admin.
 			require_once( NF_PLUGIN_DIR . 'includes/admin/step-processing.php' );
-			require_once( NF_PLUGIN_DIR . 'classes/step-processing.php' );
-
-			// Include our download all submissions php files
-			require_once( NF_PLUGIN_DIR . 'classes/download-all-subs.php' );
-
-            // Include Upgrade Base Class
-            require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/class-upgrade.php');
 
             // Include Upgrades
 			require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/upgrade-functions.php' );
-			require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/upgrades.php' );
-            require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/convert-forms-reset.php' );
-
-            // Include Upgrade Handler
-            require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/upgrade-handler-page.php');
-            require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/class-upgrade-handler.php');
 		}
 
 		// Include our upgrade files.
@@ -496,7 +468,7 @@ class Ninja_Forms {
 		require_once( NINJA_FORMS_DIR . "/includes/shortcode.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/widget.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/field-type-groups.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/eos.class.php" );
+
 		require_once( NINJA_FORMS_DIR . "/includes/from-setting-check.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/reply-to-check.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/import-export.php" );

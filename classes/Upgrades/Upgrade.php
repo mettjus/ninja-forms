@@ -1,11 +1,11 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Class NF_Upgrade
+ * Class NF_Upgrades_Upgrade
  *
  * The Upgrade class should be extended by all upgrades to be used by the Upgrade Handler.
  */
-abstract class NF_Upgrade
+abstract class NF_Upgrades_Upgrade
 {
     /**
      * @var name

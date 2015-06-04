@@ -3,7 +3,7 @@
 /**
  * Basic Stack Class
  *
- * Created for use with eqEOS. May eventually be replaced with native
+ * Created for use with NF_eqEOS. May eventually be replaced with native
  * PHP functions `array_pop()`, `array_push()`, and `end()`
  *
  * @author Jon Lawrence <jlawrence11@gmail.com>
@@ -12,7 +12,7 @@
  * @package eos.class.php
  * @version 2.0
  */
-class phpStack {
+class NF_phpStack {
 	private $index;
 	private $locArray;
 
@@ -55,7 +55,7 @@ class phpStack {
 	/**
 	 * Push
 	 *
-	 * Alias of {@see phpStack::poke()}
+	 * Alias of {@see NF_phpStack::poke()}
 	 * Adds element to the stack
 	 *
 	 * @param Mixed Element to add

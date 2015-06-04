@@ -9,7 +9,7 @@
  * @since       2.7
 */
 
-class NF_Form {
+class NF_Forms_FormObject {
 
 	/**
 	 * @var form_id

@@ -10,7 +10,7 @@
  * @since       2.7
 */
 
-class NF_Subs {
+class NF_Subs_Collection {
 
 	/**
 	 * Get things started

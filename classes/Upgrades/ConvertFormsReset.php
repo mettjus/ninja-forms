@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
-class NF_Convert_Forms_Reset
+class NF_Upgrades_ConvertFormsReset
 {
     public function __construct()
     {
@@ -80,4 +80,4 @@ class NF_Convert_Forms_Reset
 } // End Ninja_Forms_View_Admin Class
 
 // Self-Instantiate
-new NF_Convert_Forms_Reset();
+new NF_Upgrades_ConvertFormsReset();

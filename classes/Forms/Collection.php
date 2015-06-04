@@ -9,7 +9,7 @@
  * @since       2.9
 */
 
-class NF_Forms {
+class NF_Forms_Collection {
 
 	/**
 	 * Store our array of form ids

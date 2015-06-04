@@ -10,7 +10,7 @@
  * @since       2.7
 */
 
-class NF_Sub {
+class NF_Subs_SubObject {
 
 	/**
 	 * @var $sub_id store our sub id

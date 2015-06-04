@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
-final class NF_Upgrade_Database_Migrations extends NF_Upgrade
+final class NF_Upgrades_DatabaseMigrations extends NF_Upgrades_Upgrade
 {
     public $name = 'database_migrations';
 

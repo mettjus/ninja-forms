@@ -51,12 +51,6 @@ define('EQEOS_E_NO_VAR', 5503);
 if(!defined('DEBUG'))
 	define('DEBUG', false);
 
-//We use a stack class so we don't have to keep track of indices for an array
-// May eventually update to use `array_pop()` `end()` and `array_push()` instead
-// of this class.
-require_once "stack.class.php";
-
-
 /**
  * Equation Operating System (EOS) Parser
  *
@@ -73,7 +67,7 @@ require_once "stack.class.php";
  * @subpackage EOS
  * @version 2.0
  */
-class eqEOS {
+class NF_eqEOS {
     /**#@+
      *Private variables
      */
@@ -101,7 +95,7 @@ class eqEOS {
 	 * internal variable to solve with this::solveIF() without needing
 	 * additional input.  Initializing with a variable is not suggested.
 	 *
-	 * @see eqEOS::solveIF()
+	 * @see NF_eqEOS::solveIF()
 	 * @param String $inFix Standard format equation
 	 */
 	public function __construct($inFix = null) {
@@ -142,7 +136,7 @@ class eqEOS {
 	 * Infix to Postfix
 	 *
 	 * Converts an infix (standard) equation to postfix (RPN) notation.
-	 * Sets the internal variable $this->postFix for the eqEOS::solvePF()
+	 * Sets the internal variable $this->postFix for the NF_eqEOS::solvePF()
 	 * function to use.
 	 *
 	 * @link http://en.wikipedia.org/wiki/Infix_notation Infix Notation
@@ -157,8 +151,8 @@ class eqEOS {
 		//check to make sure 'valid' equation
 		$this->checkInfix($infix);
 		$pf = array();
-		$ops = new phpStack();
-		$vars = new phpStack();
+		$ops = new NF_phpStack();
+		$vars = new NF_phpStack();
 
 		// remove all white-space
 		preg_replace("/\s/", "", $infix);
@@ -256,7 +250,7 @@ class eqEOS {
 	 * Solve Postfix (RPN)
 	 * 
 	 * This function will solve a RPN array. Default action is to solve
-	 * the RPN array stored in the class from eqEOS::in2post(), can take
+	 * the RPN array stored in the class from NF_eqEOS::in2post(), can take
 	 * an array input to solve as well, though default action is prefered.
 	 *
 	 * @link http://en.wikipedia.org/wiki/Reverse_Polish_notation Postix Notation
@@ -336,8 +330,8 @@ class eqEOS {
 		//Check to make sure a 'valid' expression
 		$this->checkInfix($infix);
 
-		$ops = new phpStack();
-		$vars = new phpStack();
+		$ops = new NF_phpStack();
+		$vars = new NF_phpStack();
 
 		//remove all white-space
 		preg_replace("/\s/", "", $infix);
@@ -428,17 +422,17 @@ class eqEOS {
 
 
 	} //end function solveIF
-} //end class 'eqEOS'
+} //end class 'NF_eqEOS'
 
 
 // fun class that requires the GD libraries to give visual output to the user 
-/* extends the eqEOS class so that it doesn't need to create it as a private var 
+/* extends the NF_eqEOS class so that it doesn't need to create it as a private var 
     - and it extends the functionality of that class */
 /**
  * Equation Graph
  *
  * Fun class that requires the GD libraries to give visual output of an
- * equation to the user.  Extends the eqEOS class.
+ * equation to the user.  Extends the NF_eqEOS class.
  *
  * @author Jon Lawrence <jlawrence11@gmail.com>
  * @copyright Copyright �2005-2013 Jon Lawrence
@@ -447,7 +441,7 @@ class eqEOS {
  * @subpackage EOS
  * @version 2.0
  */
-class eqGraph extends eqEOS {
+class eqGraph extends NF_eqEOS {
 	private $width;
 	private $height;
 	//GD Image reference
@@ -508,7 +502,7 @@ class eqGraph extends eqEOS {
 			$tester = sprintf("%10.3f",$i);
 			if($tester == "-0.000") $i = 0;
 			$y = $this->solveIF($eq, $i);
-			//eval('$y='. str_replace('&x', $i, $eq).";"); /* used to debug my eqEOS class results */
+			//eval('$y='. str_replace('&x', $i, $eq).";"); /* used to debug my NF_eqEOS class results */
 			if(DEBUG) {
 				$tmp1 = sprintf("y(%5.3f) = %10.3f\n", $i, $y);
 				fwrite($hand, $tmp1);

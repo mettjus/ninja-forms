@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
                         return;
                     }
 
-                    console.log( 'DEBUG: NF_UpgradeHandler step response: ');
+                    console.log( 'DEBUG: NF_Upgrades_Handler step response: ');
                     console.log( response );
 
                     if( undefined == response ) {
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
                             return;
                         }
 
-                        console.log( 'DEBUG: NF_UpgradeHandler says "It is finished!"' );
+                        console.log( 'DEBUG: NF_Upgrades_Handler says "It is finished!"' );
 
                         $( '.nf-upgrade-complete' ).nfAdminModal( 'open' );
 
@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
 
     if( "undefined" != typeof nfUpgradeHandler  ) {
 
-        console.log('DEBUG: NF_UpgradeHandler first upgrades is ' + nfUpgradeHandler.upgrade);
+        console.log('DEBUG: NF_Upgrades_Handler first upgrades is ' + nfUpgradeHandler.upgrade);
 
         var upgradeHandler = new UpgradeHandler(nfUpgradeHandler.upgrade);
 

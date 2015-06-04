@@ -10,7 +10,7 @@
  * @since       2.7.4
 */
 
-class NF_Step_Processing
+class NF_StepProcessing
 {
 
 	/**

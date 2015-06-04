@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
-class NF_Download_All_Subs extends NF_Step_Processing {
+class NF_Subs_DownloadAll extends NF_StepProcessing {
 
 	function __construct() {
 		$this->action = 'download_all_subs';

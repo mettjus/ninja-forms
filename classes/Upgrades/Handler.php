@@ -1,15 +1,9 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
-require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/database-migrations.php' );
-require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/convert-forms.php' );
-require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/convert-notifications.php' );
-require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/convert-subs.php' );
-require_once( NF_PLUGIN_DIR . 'includes/admin/upgrades/update-email-settings.php' );
-
 /**
 * Class NF_Upgrade_Handler
 */
-class NF_UpgradeHandler
+class NF_Upgrades_Handler
 {
     static $instance;
 
@@ -20,7 +14,7 @@ class NF_UpgradeHandler
     public static function instance()
     {
         if ( ! isset( self::$instance ) ) {
-            self::$instance = new NF_UpgradeHandler();
+            self::$instance = new NF_Upgrades_Handler();
         }
 
         return self::$instance;
@@ -37,18 +31,18 @@ class NF_UpgradeHandler
             add_action( 'wp_ajax_nf_upgrade_handler', array( $this, 'ajax_response' ) );
             return;
         } else {
-            $this->page = new NF_UpgradeHandlerPage();
+            $this->page = new NF_Upgrades_HandlerPage();
         }
 
     }
 
     public function register_upgrades()
     {
-        $this->upgrades[] = new NF_Upgrade_Database_Migrations();
-        $this->upgrades[] = new NF_Upgrade_Forms();
-        $this->upgrades[] = new NF_Upgrade_Notifications();
-        $this->upgrades[] = new NF_Upgrade_Submissions();
-        $this->upgrades[] = new NF_Upgrade_Email_Settings();
+        $this->upgrades[] = new NF_Upgrades_DatabaseMigrations();
+        $this->upgrades[] = new NF_Upgrades_Forms();
+        $this->upgrades[] = new NF_Upgrades_Notifications();
+        $this->upgrades[] = new NF_Upgrades_Submissions();
+        $this->upgrades[] = new NF_Upgrades_EmailSettings();
 
         $this->upgrades = apply_filters( 'nf_upgrade_handler_register', $this->upgrades );
 
@@ -145,7 +139,7 @@ class NF_UpgradeHandler
     }
 }
 
-function NF_UpgradeHandler() {
-    return NF_UpgradeHandler::instance();
+function NF_Upgrades_Handler() {
+    return NF_Upgrades_Handler::instance();
 }
-NF_UpgradeHandler();
+NF_Upgrades_Handler();

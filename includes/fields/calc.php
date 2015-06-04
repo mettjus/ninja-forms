@@ -612,7 +612,7 @@ function ninja_forms_field_calc_pre_process(){
 				}
 
 				if ( $calc_method == 'eq' ) {
-					$eq = new eqEOS();
+					$eq = new NF_eqEOS();
 					$result = $eq->solveIF($calc_eq);
 				}
 
@@ -787,7 +787,7 @@ function ninja_forms_calc_field_loop( $field_id, $calc_eq = '', $result = '' ) {
 		}
 	}
 	if ( $calc_method == 'eq' ) {
-		$eq = new eqEOS();
+		$eq = new NF_eqEOS();
 		$result = $eq->solveIF($calc_eq);
 	}
 

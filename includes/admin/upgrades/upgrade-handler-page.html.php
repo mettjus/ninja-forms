@@ -2,7 +2,7 @@
 
     <h2><?php _e( 'Ninja Forms Upgrade Processing', 'ninja-forms' ); ?></h2>
 
-    <?php foreach ( NF_UpgradeHandler()->upgrades as $upgrade ): ?>
+    <?php foreach ( NF_Upgrades_Handler()->upgrades as $upgrade ): ?>
         <?php if( ! $upgrade->isComplete() ) : ?>
             <div id="nf_upgrade_<?php echo $upgrade->name ?>">
                 <dl class="menu-item-bar nf_upgrade">

@@ -47,7 +47,7 @@ if( isset ( $settings['delete_on_uninstall'] ) && 1 == $settings['delete_on_unin
 
 
     // Remove upgrade last step options
-    $upgrades = NF_UpgradeHandler()->upgrades;
+    $upgrades = NF_Upgrades_Handler()->upgrades;
 
     if( $upgrades AND is_array( $upgrades ) ) {
         foreach ($upgrades as $upgrade) {

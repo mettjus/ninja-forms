@@ -1,6 +1,6 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
 
-final class NF_Upgrade_Notifications extends NF_Upgrade
+final class NF_Upgrades_Notifications extends NF_Upgrades_Upgrade
 {
     public $name = 'notifications';
 

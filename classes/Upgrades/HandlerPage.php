@@ -1,6 +1,6 @@
 <?php //if ( ! defined( 'ABSPATH' ) ) exit;
 
-class NF_UpgradeHandlerPage
+class NF_Upgrades_HandlerPage
 {
     public $slug = 'nf-upgrade-handler';
 
@@ -49,7 +49,7 @@ class NF_UpgradeHandlerPage
             /* In Footer    */ TRUE
         );
 
-        $upgrades = NF_UpgradeHandler()->upgrades;
+        $upgrades = NF_Upgrades_Handler()->upgrades;
         $first_upgrade = null;
         foreach( $upgrades as $upgrade ) {
 
@@ -91,7 +91,7 @@ class NF_UpgradeHandlerPage
             return;
         }
 
-        $upgrades = NF_UpgradeHandler()->upgrades;
+        $upgrades = NF_Upgrades_Handler()->upgrades;
 
         $upgrade_count = 0;
 
