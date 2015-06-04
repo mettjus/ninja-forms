@@ -1,5 +1,4 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
-add_action('admin_init', 'ninja_forms_register_sidebar_template_fields');
 
 function ninja_forms_register_sidebar_template_fields(){
 	$args = array(
@@ -10,3 +9,5 @@ function ninja_forms_register_sidebar_template_fields(){
 	);
 	ninja_forms_register_sidebar('template_fields', $args);
 }
+
+add_action('admin_init', 'ninja_forms_register_sidebar_template_fields');

@@ -16,13 +16,16 @@ abstract class NF_Fields_BaseField
 {
 	var $sidebar = 'template_fields';
 	var $edit_options = array();
-
+	var $limit = '';
+	var $show_field_id = true;
+	var $show_fav = true;
 	/**
 	 * Get things rolling
 	 * @since 3.0
 	 */
 	function __construct()
 	{
+
 		$this->edit_sections = apply_filters( 'nf_edit_field_settings_sections', array(
 			'restrictions' 	=> __( 'Restriction Settings', 'ninja-forms' ),
 			'calculations'	=> __( 'Calculation Settings', 'ninja-forms' ),
@@ -68,6 +71,34 @@ abstract class NF_Fields_BaseField
 					'type'	=> 'text',
 					'label'	=> __( 'Admin Label', 'ninja-forms' ),
 					'desc'	=> __( 'This is the label used when viewing/editing/exporting submissions.', 'ninja-forms' ),
+				),
+				'show_help'			=> array(
+					'type'			=> 'checkbox',
+					'label'			=> __( 'Show Help Text', 'ninja-forms' ),
+				),
+				'help_text'			=> array(
+					'type'			=> 'textarea',
+					'label'			=> __( 'Help Text', 'ninja-forms' ),
+					'desc'			=> sprintf(__('If "help text" is enabled, there will be a question mark %s placed next to the input field. Hovering over this question mark will show the help text.', 'ninja-forms'), '<img src="'.NINJA_FORMS_URL.'images/question-ico.gif">'),
+				),
+				'show_desc'			=> array(
+					'type'			=> 'checkbox',
+					'label'			=> __( 'Add Description', 'ninja-forms' ),
+				),
+				'desc_pos'			=> array(
+					'type'			=> 'select',
+					'label'			=> __( 'Description Position', 'ninja-forms' ),
+					'options'		=> array(
+						array( 'name' => __( 'None', 'ninja-forms' ), 'value' => 'none' ),
+						array( 'name' => __( 'Before Everything', 'ninja-forms' ), 'value' => 'before_everything' ),
+						array( 'name' => __( 'Before Label', 'ninja-forms' ), 'value' => 'before_label' ),
+						array( 'name' => __( 'After Label', 'ninja-forms' ), 'value' => 'after_label' ),
+						array( 'name' => __( 'After Everything', 'ninja-forms' ), 'value' => 'after_everything' ),
+					),
+				),
+				'desc_text'			=> array(
+					'type'			=> 'rte',
+					'label'			=> __( 'Description Content', 'ninja-forms' ),
 				),
 			),
 		);
@@ -158,6 +189,13 @@ abstract class NF_Fields_BaseField
 		 */
 	}
 
+	public function output_edit_html( $field )
+	{
+		$this->output_edit_open_li( $field );
+		$this->output_edit_inside( $field );
+		$this->output_edit_close_li( $field );
+	}
+
 	public function output_edit_li( $field )
 	{
 		$this->output_edit_open_li( $field );
@@ -170,7 +208,7 @@ abstract class NF_Fields_BaseField
 		$conditional_value_type = '';
 		$type_name = $this->name;
 		$li_label = $field->get_setting( 'label' );
-		$padding = 'no-padding';
+		$padding = ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ? '' : 'no-padding';
 		$fav_id = '';
 		$def_id = '';
 		?>
@@ -193,6 +231,7 @@ abstract class NF_Fields_BaseField
 
 	public function output_edit_close_li( $field )
 	{
+		$field_id = $field->id;
 		?>
 			</div>
 		</li>
@@ -201,6 +240,31 @@ abstract class NF_Fields_BaseField
 
 	public function output_edit_inside( $field )
 	{
+		global $nf_rte_editors;
+		$field_id = $field->id;
+		?>
+		<table id="field-info">
+			<tr>
+			<?php
+			if ( $this->show_field_id ) {
+					?>
+					<td width="65%"><?php _e( 'Field ID', 'ninja-forms' ); ?>: <strong><?php echo $field_id;?></strong></td>
+					<?php
+				}
+				?>
+				<!-- <td width="15%"><a href="#" class="ninja-forms-field-add-def" id="ninja_forms_field_<?php echo $field_id;?>_def" class="ninja-forms-field-add-def">Add Defined</a></td><td width="15%"><a href="#" class="ninja-forms-field-remove-def" id="ninja_forms_field_<?php echo $field_id;?>_def">Remove Defined</a></td> -->
+				<?php
+				if ( $this->show_fav ) {
+					?>
+					<td width="5%"><a href="#" class="<?php echo $fav_class;?>" id="ninja_forms_field_<?php echo $field_id;?>_fav"><span class="dashicons dashicons-star-<?php echo $icon_class; ?>"></span></a></td>
+					<?php
+				}
+				?>
+			</tr>
+		</table>
+
+		<?php
+
 		$this->output_settings_html( $field, 'basic' );
 
 		$x = 0;
@@ -224,6 +288,18 @@ abstract class NF_Fields_BaseField
 			<?php
 			$x++;
 		}
+
+		?>
+		<div class="menu-item-actions description-wide submitbox">
+			<a class="submitdelete deletion nf-remove-field" id="ninja_forms_field_<?php echo $field_id;?>_remove" data-field="<?php echo $field_id; ?>" href="#"><?php _e('Remove', 'ninja-forms'); ?></a>
+		</div>
+
+		<?php
+		$editors = new NF_WPEditorAjax();
+
+		if ( ! empty ( $nf_rte_editors ) && isset ( $editors ) && is_object( $editors ) ) {
+			$editors->output_js( $field_id, $nf_rte_editors );
+		}
 	}
 
 	public function output_settings_html( $field, $slug )
@@ -243,7 +319,7 @@ abstract class NF_Fields_BaseField
 		}
 	}
 
-	public function text( $field, $name, $args )
+	public function text( $field, $name, $args = array() )
 	{
 		$field_id = $field->id;
 		$value = $field->get_setting( $name );
@@ -258,7 +334,7 @@ abstract class NF_Fields_BaseField
 		<?php
 	}
 
-	public function checkbox( $field, $name,  $args )
+	public function checkbox( $field, $name,  $args = array() )
 	{
 		$field_id = $field->id;
 		$value = $field->get_setting( $name );
@@ -274,7 +350,7 @@ abstract class NF_Fields_BaseField
 		<?php
 	}
 
-	public function select( $field, $name, $args )
+	public function select( $field, $name, $args = array() )
 	{
 		$field_id = $field->id;
 		$value = $field->get_setting( $name );
@@ -298,6 +374,47 @@ abstract class NF_Fields_BaseField
 		?>
 		</select>
 		<?php
+	}
+
+	public function textarea( $field, $name, $args = array() )
+	{
+		$field_id = $field->id;
+		$value = $field->get_setting( $name );
+		$id = 'ninja_forms_field_'.$field_id.'_'.$name;
+		$name = 'ninja_forms_field_' . $field_id . '[' . $name .']';
+		$class = 'widefat';
+		?>
+		<textarea id="<?php echo $id;?>" name="<?php echo $name;?>" class="<?php echo $class;?>" rows="3" cols="20" ><?php echo $value;?></textarea>
+		<?php
+	}
+
+	public function rte( $field, $name, $args = array() )
+	{
+		global $nf_rte_editors;
+		// used to capture javascript settings generated by the editor
+		add_filter( 'tiny_mce_before_init', 'NF_WPEditorAjax::tiny_mce_before_init', 10, 2 );
+		add_filter( 'quicktags_settings', 'NF_WPEditorAjax::quicktags_settings', 10, 2 );
+
+		$field_id = $field->id;
+		$value = $field->get_setting( $name );
+		$id = 'ninja_forms_field_'.$field_id.'_'.$name;
+		$name = 'ninja_forms_field_' . $field_id . '[' . $name .']';
+
+		// Check if our current user has the RTE disabled.
+		$user_id = get_current_user_id();
+		$rich_editing = get_user_meta( $user_id, 'rich_editing', true );
+		if ( 'true' == $rich_editing ) {
+			$editor_id = str_replace( '[', '_', $name );
+			$editor_id = str_replace( ']', '', $editor_id );
+			
+			$args = apply_filters( 'ninja_forms_edit_field_rte', array( 'textarea_name' => $name ) );
+			wp_editor( $value, $editor_id, $args = array() );				
+			$nf_rte_editors[] = $editor_id;
+		} else {
+			?>
+			<textarea id="<?php echo $id;?>" name="<?php echo $name;?>" class="<?php echo $class;?>" rows="3" cols="20" ><?php echo $value;?></textarea>
+			<?php
+		}
 	}
 
 }

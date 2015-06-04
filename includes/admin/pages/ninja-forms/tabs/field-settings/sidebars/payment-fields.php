@@ -12,7 +12,7 @@ function ninja_forms_register_sidebar_payment_fields(){
 		'name' => __( 'Payment Fields', 'ninja-forms' ),
 		'page' => 'ninja-forms',
 		'tab' => 'builder',
-		'display_function' => 'ninja_forms_sidebar_payment_fields'
+		// 'display_function' => 'ninja_forms_sidebar_payment_fields'
 	);
 	ninja_forms_register_sidebar('payment_fields', $args);
 }

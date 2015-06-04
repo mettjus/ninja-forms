@@ -37,7 +37,7 @@ if( ! class_exists( 'WP_List_Table' ) ) {
  * 
  * Our theme for this list table is going to be movies.
  */
-class NF_Notifications_List_Table extends WP_List_Table {
+class NF_Actions_ListTable extends WP_List_Table {
     
     /**
      * @var form_id

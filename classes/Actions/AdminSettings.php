@@ -15,7 +15,7 @@
  * @since       2.8
 */
 
-class NF_Notifications
+class NF_Actions_AdminSettings
 {
 	/**
 	 * Get things rolling
@@ -26,13 +26,6 @@ class NF_Notifications
 	 */
 	function __construct() {
 		global $pagenow;
-
-		// Register our notification types
-		Ninja_Forms()->notification_types['email'] = require_once( NF_PLUGIN_DIR . 'classes/notification-email.php' );
-		Ninja_Forms()->notification_types['redirect'] = require_once( NF_PLUGIN_DIR . 'classes/notification-redirect.php' );
-		Ninja_Forms()->notification_types['success_message'] = require_once( NF_PLUGIN_DIR . 'classes/notification-success-message.php' );
-
-		Ninja_Forms()->notification_types = apply_filters( 'nf_notification_types', Ninja_Forms()->notification_types );
 
 		// Register our notification tab
 		add_action( 'admin_init', array( $this, 'register_tab' ) );
@@ -226,7 +219,7 @@ class NF_Notifications
 	            <input type="hidden" name="form_id" value="<?php echo esc_attr( $_REQUEST['form_id'] ); ?>" />
 				<?php
 				//Create an instance of our package class...
-			    $nf_all_forms = new NF_Notifications_List_Table();
+			    $nf_all_forms = new NF_Actions_ListTable();
 			    //Fetch, prepare, sort, and filter our data...
 			    $nf_all_forms->prepare_items();
 	 			// Now we can render the completed list table
@@ -282,7 +275,7 @@ class NF_Notifications
 					<tbody id="notification-<?php echo $slug; ?>" class="notification-type" style="<?php echo $display;?>">
 						<?php
 							// Call our type edit screen.
-							Ninja_Forms()->notification_types[ $slug ]->edit_screen( $id );
+							Ninja_Forms()->action_types[ $slug ]->edit_screen( $id );
 						?>
 					</tbody>
 					<?php
@@ -320,7 +313,7 @@ class NF_Notifications
 			$new = false;
 		}
 
-		$data = Ninja_Forms()->notification_types[ $type ]->save_admin( $n_id, $data );
+		$data = Ninja_Forms()->action_types[ $type ]->save_admin( $n_id, $data );
 
 		foreach ( $settings as $meta_key => $meta_value ) {
 			nf_update_object_meta( $n_id, $meta_key, $meta_value );
@@ -347,7 +340,7 @@ class NF_Notifications
 	 */
 	public function get_types() {
 		$types = array();
-		foreach ( Ninja_Forms()->notification_types as $slug => $object ) {
+		foreach ( Ninja_Forms()->action_types as $slug => $object ) {
 			$types[ $slug ] = $object->name;
 		}
 		return $types;

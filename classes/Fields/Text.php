@@ -20,11 +20,62 @@ class NF_Fields_Text extends NF_Fields_BaseField
 		parent::__construct();
 		$this->name = __( 'Single Line Text', 'ninja-forms' );
 
+		$basic_settings = array(
+			'placeholder' 		=> array(
+				'type'			=> 'text',
+				'label'			=> __( 'Placeholder', 'ninja-forms' ),
+			),
+		);
+
+		$this->edit_settings['basic'] = wp_parse_args( $basic_settings, $this->edit_settings['basic'] );
+
+		$res_settings = array(
+			'disable_input' 	=> array(
+				'type'			=> 'checkbox',
+				'label'			=> __( 'Disable Input', 'ninja-forms' ),
+			),
+			'mask_type'			=> array(
+				'type'			=> 'select',
+				'label'			=> __( 'Input Mask', 'ninja-forms' ),
+				'options'		=> array(
+					array( 'name' => 'None', 'value' => '' ),
+					array( 'name' => 'Phone (555) 555-5555', 'value' => '(999) 999-9999' ),
+					array( 'name' => 'Date', 'value' => 'date' ),
+					array( 'name' => 'Currency', 'value' => 'currency' ),
+					array( 'name' => 'Custom', 'value' => '_custom' ),
+				),
+			),
+			'mask'				=> array(
+				'type'			=> 'text',
+				'label'			=> __( 'Custom Mask Definition', 'ninja-forms' ),
+			),
+			'input_limit'		=> array(
+				'type'			=> 'text',
+				'label'			=> __( 'Limit input to this number', 'ninja-forms' ),
+				'desc'			=> __( 'If you leave the box empty, no limit will be used', 'ninja-forms' ),
+			),
+			'input_limit_type'	=> array(
+				'type'			=> 'select',
+				'label'			=> __( 'of', 'ninja-forms' ),
+				'options'		=> array(
+					array( 'name' => __( 'Characters', 'ninja-forms' ), 'value' => 'char' ),
+					array( 'name' => __( 'Words', 'ninja-forms' ), 'value' => 'word' ),
+				),
+			),
+			'input_limit_msg'	=> array(
+				'type'			=> 'text',
+				'label'			=> __( 'Text to appear after character/word counter', 'ninja-forms' ),
+				'desc'			=> __( 'character(s) remaining', 'ninja-forms' ),
+			),
+		);
+
+		$this->edit_settings['restrictions'] = wp_parse_args( $res_settings, $this->edit_settings['restrictions'] );
+
 		$adv_settings = array(
-			'default_value' => array(
-				'type'	=> 'select',
-				'label'	=> __( 'Default Value', 'ninja-forms' ),
-				'options' => array(
+			'default_value_type'=> array(
+				'type'			=> 'select',
+				'label'			=> __( 'Default Value', 'ninja-forms' ),
+				'options'		=> array(
 					array( 'name' => __( 'None', 'ninja-forms' ), 'value' => '' ),
 					array( 'name' => __( 'User ID (If logged in)', 'ninja-forms'), 'value' => '_user_id' ),
 					array( 'name' => __( 'User Firstname (If logged in)', 'ninja-forms'), 'value' => '_user_firstname' ),
@@ -39,86 +90,22 @@ class NF_Fields_Text extends NF_Fields_BaseField
 					array( 'name' => __( 'Querystring Variable -&gt;', 'ninja-forms'), 'value' => 'querystring' ),
 				),
 			),
+			'default_value'		=> array(
+				'type'			=> 'text',
+				'label'			=> __( 'Custom Default Value', 'ninja-forms' ),
+			),
 			'autocomplete_off'	=> array(
-				'type'	=> 'checkbox',
-				'label'	=> __( 'Disable Browser Autocomplete', 'ninja-forms' ),
+				'type'			=> 'checkbox',
+				'label'			=> __( 'Disable Browser Autocomplete', 'ninja-forms' ),
+			),
+			'num_sort'			=> array(
+				'type'			=> 'checkbox',
+				'label'			=> __( 'Sort as numeric', 'ninja-forms' ),
+				'desc'			=> __( 'If this box is checked, this column in the submissions table will sort by number.', 'ninja-forms' ),
 			),
 		);
 
 		$this->edit_settings['advanced'] = wp_parse_args( $adv_settings, $this->edit_settings['advanced'] );
 
 	}
-
-	/**
-	 * Output our field editing HTML
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're editing.
-	 * @return void
-	 */
-	public function edit( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	/**
-	 * Output our field display HTML
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're displaying.
-	 * @return void
-	 */
-	public function display( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	/**
-	 * Run our before_pre_processing function
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're processing.
-	 * @return void
-	 */
-	public function before_pre_process( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	/**
-	 * Run our pre_processing function
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're processing.
-	 * @return void
-	 */
-	public function pre_process( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	/**
-	 * Run our processing function
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're processing.
-	 * @return void
-	 */
-	public function process( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
-	/**
-	 * Run our post_processing function
-	 * @since  3.0
-	 * @param  int  $id The ID of the field we're processing.
-	 * @return void
-	 */
-	public function post_process( $id ) {
-		/*
-		This space left intentionally blank
-		 */
-	}
-
 }

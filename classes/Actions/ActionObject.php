@@ -12,7 +12,7 @@
  * @since       2.8
 */
 
-class NF_Notification
+class NF_Actions_ActionObject
 {
 
 	/**
@@ -61,7 +61,7 @@ class NF_Notification
 	public function edit_screen() {
 		$type = $this->type;
 		// Call our type edit screen.
-		Ninja_Forms()->notification_types[ $type ]->edit_screen( $this->id );
+		Ninja_Forms()->action_types[ $type ]->edit_screen( $this->id );
 	}
 
 	/**
@@ -126,8 +126,8 @@ class NF_Notification
 	 */
 	public function process() {
 		$type = $this->type;
-		if ( isset ( Ninja_Forms()->notification_types[ $type ] ) && is_object( Ninja_Forms()->notification_types[ $type ] ) ) {
-			Ninja_Forms()->notification_types[ $type ]->process( $this->id );			
+		if ( isset ( Ninja_Forms()->action_types[ $type ] ) && is_object( Ninja_Forms()->action_types[ $type ] ) ) {
+			Ninja_Forms()->action_types[ $type ]->process( $this->id );			
 		}
 	}
 
@@ -164,7 +164,7 @@ class NF_Notification
 	public function type_name() {
 		$type = $this->type;
 		// Call our type edit screen.
-		return Ninja_Forms()->notification_types[ $type ]->name;
+		return Ninja_Forms()->action_types[ $type ]->name;
 	}
 
 }

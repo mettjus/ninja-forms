@@ -9,7 +9,7 @@
  * @since       2.8
 */
 
-class NF_Notification_Success_Message extends NF_Notification_Base_Type
+class NF_Actions_SuccessMessage extends NF_Actions_BaseAction
 {
 
 	/**
@@ -83,5 +83,3 @@ class NF_Notification_Success_Message extends NF_Notification_Base_Type
 		$ninja_forms_processing->add_success_msg( 'success_msg-' . $name, $success_msg );
 	}
 }
-
-return new NF_Notification_Success_Message();

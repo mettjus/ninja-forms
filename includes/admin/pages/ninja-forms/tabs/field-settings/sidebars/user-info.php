@@ -12,7 +12,7 @@ function ninja_forms_register_sidebar_user_info_fields(){
 		'name' => __( 'User Information', 'ninja-forms' ),
 		'page' => 'ninja-forms',
 		'tab' => 'builder',
-		'display_function' => 'ninja_forms_sidebar_user_info_fields'
+		// 'display_function' => 'ninja_forms_sidebar_user_info_fields'
 	);
 	ninja_forms_register_sidebar('user_info', $args);
 }

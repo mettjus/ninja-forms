@@ -10,7 +10,7 @@
  * @since       2.8
 */
 
-abstract class NF_Notification_Base_Type
+abstract class NF_Actions_BaseAction
 {
 
 	/**

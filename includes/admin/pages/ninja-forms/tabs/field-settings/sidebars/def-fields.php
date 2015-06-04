@@ -6,7 +6,7 @@ function ninja_forms_register_sidebar_def_fields(){
 		'name' => __( 'Defined Fields', 'ninja-forms' ),
 		'page' => 'ninja-forms',
 		'tab' => 'builder',
-		'display_function' => 'ninja_forms_sidebar_def_fields'
+		// 'display_function' => 'ninja_forms_sidebar_def_fields'
 	);
 	ninja_forms_register_sidebar('def_fields', $args);
 }

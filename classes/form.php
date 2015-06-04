@@ -100,7 +100,9 @@ class NF_Form {
 
 		$order = isset ( $args['order'] ) ? $args['order'] : 999;
 		unset ( $args['order'] );
-		$wpdb->insert( NF_FIELDS_TABLE_NAME, array( 'form_id' => $this->form_id, 'order' => $order ) );
+		$type = isset( $args['type'] ) ? $args['type'] : '';
+		unset( $args['type'] );
+		$wpdb->insert( NF_FIELDS_TABLE_NAME, array( 'form_id' => $this->form_id, 'order' => $order, 'type' => $type ) );
 		$field_id = $wpdb->insert_id;
 		unset ( $args['form_id'] );
 		foreach ( $args as $meta_key => $meta_value ) {

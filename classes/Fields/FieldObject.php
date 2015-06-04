@@ -64,6 +64,8 @@ class NF_Fields_FieldObject
 				if ( ! isset ( $field_data['type'] ) ) {
 					$field_data['type'] = $d['type'];
 				}
+				$field_data['fav_id'] = '';
+				$field_data['def_id'] = '';
 				switch ( $d['meta_key'] ) {
 					case 'type':
 						$field_data['type'] = $d['meta_value'];
@@ -182,6 +184,27 @@ class NF_Fields_FieldObject
 		if ( $update_cache ) {
 			$this->order = $order;
 		}
+	}
+
+	public function delete()
+	{
+		global $wpdb;
+
+		Ninja_Forms()->form( $this->form_id )->dump_cache();
+		$this->dump_cache();
+
+		$wpdb->query($wpdb->prepare( "DELETE FROM " . NF_FIELDS_TABLE_NAME . " WHERE id = %d", $this->id ) );
+		$wpdb->query($wpdb->prepare( "DELETE FROM " . NF_FIELDMETA_TABLE_NAME . " WHERE field_id = %d", $this->id ) );
+	}
+
+	public function dump_cache()
+	{
+		delete_transient( 'nf_field_' . $this->id );
+	}
+
+	public function output_edit_html()
+	{
+		Ninja_Forms()->field_types[ $this->type ]->output_edit_html( $this );
 	}
 
 	public function output_edit_li()

@@ -142,8 +142,6 @@ add_action( 'wp_ajax_nf_admin_save_builder', 'nf_admin_save_builder' );
 
 add_action('wp_ajax_ninja_forms_new_field', 'ninja_forms_new_field');
 function ninja_forms_new_field(){
-	global $wpdb, $ninja_forms_fields;
-
 	// Bail if we aren't in the admin
 	if ( ! is_admin() )
 		return false;
@@ -156,48 +154,18 @@ function ninja_forms_new_field(){
 
 	$type = esc_html( $_REQUEST['type'] );
 	$form_id = absint( $_REQUEST['form_id'] );
-
-	if( isset( $ninja_forms_fields[$type]['name'] ) ){
-		$type_name = $ninja_forms_fields[$type]['name'];
-	}else{
-		$type_name = '';
-	}
-
-	if( isset( $ninja_forms_fields[$type]['default_label'] ) ){
-		$default_label = $ninja_forms_fields[$type]['default_label'];
-	}else{
-		$default_label = '';
-	}
-
-	if( isset( $ninja_forms_fields[$type]['edit_options'] ) ){
-		$edit_options = $ninja_forms_fields[$type]['edit_options'];
-	}else{
-		$edit_options = '';
-	}
-
-	if ( $default_label != '' ) {
-		$label = $default_label;
-	} else {
-		$label = $type_name;
-	}
+	$type_name = Ninja_Forms()->field_types[ $type ]->name;
+	$label = $type_name;
 
 	$input_limit_msg = __( 'character(s) left', 'ninja-forms' );
-
-	$data = serialize( array( 'label' => $label, 'input_limit_msg' => $input_limit_msg ) );
-
-	$order = 999;
+	$data = array( 'type' => $type, 'label' => $label, 'input_limit_msg' => $input_limit_msg, 'fav_id' => '', 'def_id' => '' );
 
 	if($form_id != 0 && $form_id != ''){
-		$args = array(
-			'type' => $type,
-			'data' => $data,
-		);
-
-		$new_id = ninja_forms_insert_field( $form_id, $args );
-		$new_html = ninja_forms_return_echo('ninja_forms_edit_field', $new_id, true );
-		header("Content-type: application/json");
-		$array = array ('new_id' => $new_id, 'new_type' => $type_name, 'new_html' => $new_html, 'edit_options' => $edit_options, 'new_type_slug' => $type );
-		echo json_encode($array);
+		$new_id = Ninja_Forms()->form( $form_id )->insert_field( $data );
+		$new_html = ninja_forms_return_echo( array( Ninja_Forms()->field( $new_id ), 'output_edit_html' ), true );
+		header( "Content-type: application/json" );
+		$array = array ( 'new_id' => $new_id, 'new_type' => $type_name, 'new_html' => $new_html, 'new_type_slug' => $type );
+		echo json_encode( $array );
 		die();
 	}
 }
@@ -217,7 +185,7 @@ function ninja_forms_remove_field(){
 	check_ajax_referer( 'nf_ajax', 'nf_ajax_nonce' );
 
 	$field_id = absint( $_REQUEST['field_id'] );
-	$wpdb->query($wpdb->prepare("DELETE FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE id = %d", $field_id));
+	Ninja_Forms()->field( $field_id )->delete();
 	die();
 }
 

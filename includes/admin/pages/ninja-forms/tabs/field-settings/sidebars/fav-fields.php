@@ -6,7 +6,7 @@ function ninja_forms_register_sidebar_fav_fields(){
 		'name' => __( 'Favorite Fields', 'ninja-forms' ),
 		'page' => 'ninja-forms',
 		'tab' => 'builder',
-		'display_function' => 'ninja_forms_sidebar_fav_fields'
+		// 'display_function' => 'ninja_forms_sidebar_fav_fields'
 	);
 	ninja_forms_register_sidebar('fav_fields', $args);
 }

@@ -9,7 +9,7 @@
  * @since       2.8
 */
 
-class NF_Notification_Email extends NF_Notification_Base_Type
+class NF_Actions_Email extends NF_Actions_BaseAction
 {
 
 	/**
@@ -409,5 +409,3 @@ class NF_Notification_Email extends NF_Notification_Base_Type
 	}
 
 }
-
-return new NF_Notification_Email();

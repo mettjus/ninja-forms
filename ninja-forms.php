@@ -63,9 +63,9 @@ class Ninja_Forms {
 	private static $instance;
 
 	/**
-	 * @var registered_notification_types
+	 * @var registered_action_types
 	 */
-	var $notification_types = array();
+	var $action_types = array();
 
 	/**
 	 * @var registered_field_types
@@ -150,16 +150,27 @@ class Ninja_Forms {
 		// Instead, the subs() methods will act as wrappers for it.
 		self::$instance->subs = new NF_Subs();
 
+		// Register our action types
+		Ninja_Forms()->action_types['email'] = new NF_Actions_Email();
+		Ninja_Forms()->action_types['redirect'] = new NF_Actions_Redirect();
+		Ninja_Forms()->action_types['success_message'] = new NF_Actions_SuccessMessage();
+
+		Ninja_Forms()->action_types = apply_filters( 'nf_action_types', Ninja_Forms()->action_types );
+
+
 		// Get our notifications up and running.
-		self::$instance->notifications = new NF_Notifications();
+		self::$instance->notifications = new NF_Actions_AdminSettings();
 
 		// Setup our main field method
 		self::$instance->field = new NF_Fields_FieldObject();
 
 		// Get our fields up and running.
-		// Register our notification types
+		// Register our field types
 		Ninja_Forms()->field_types['text'] = new NF_Fields_Text();
 		Ninja_Forms()->field_types['submitbutton'] = new NF_Fields_SubmitButton();
+		Ninja_Forms()->field_types['select'] = new NF_Fields_Select();
+		Ninja_Forms()->field_types['radio'] = new NF_Fields_Radio();
+		Ninja_Forms()->field_types['email'] = new NF_Fields_Email();
 
 		Ninja_Forms()->field_types = apply_filters( 'nf_field_types', Ninja_Forms()->field_types );
 
@@ -218,8 +229,8 @@ class Ninja_Forms {
 	}
 
 	/**
-	 * Function that acts as a wrapper for our individual notification objects.
-	 * It checks to see if an object exists for this notification id.
+	 * Function that acts as a wrapper for our individual action objects.
+	 * It checks to see if an object exists for this action id.
 	 * If it does, it returns that object. Otherwise, it creates a new one and returns it.
 	 *
 	 * @access public
@@ -227,16 +238,16 @@ class Ninja_Forms {
 	 * @since 2.8
 	 * @return object self::$instance->$n_var
 	 */
-	public function notification( $n_id = '' ) {
-		// Bail if we don't get a notification id.
+	public function action( $n_id = '' ) {
+		// Bail if we don't get a action id.
 		if ( '' == $n_id )
 			return false;
 
-		$n_var = 'notification_' . $n_id;
-		// Check to see if an object for this notification already exists.
+		$n_var = 'action_' . $n_id;
+		// Check to see if an object for this action already exists.
 		// Create one if it doesn't exist.
 		if ( ! isset ( self::$instance->$n_var ) )
-			self::$instance->$n_var = new NF_Notification( $n_id );
+			self::$instance->$n_var = new NF_Actions_ActionObject( $n_id );
 
 		return self::$instance->$n_var;
 	}
@@ -441,18 +452,10 @@ class Ninja_Forms {
 		require_once( NF_PLUGIN_DIR . 'classes/form.php' );
 		// Include our form sobject.
 		require_once( NF_PLUGIN_DIR . 'classes/forms.php' );
-		// Include our field, notification, and sidebar registration class.
-		require_once( NF_PLUGIN_DIR . 'classes/register.php' );
 		// Include our 'nf_action' watcher.
 		require_once( NF_PLUGIN_DIR . 'includes/actions.php' );
-		// Include our single notification object
-		require_once( NF_PLUGIN_DIR . 'classes/notification.php' );
-		// Include our notifications object
-		require_once( NF_PLUGIN_DIR . 'classes/notifications.php' );
-		// Include our notification table object
+		// Include our action table object
 		require_once( NF_PLUGIN_DIR . 'classes/notifications-table.php' );
-		// Include our base notification type
-		require_once( NF_PLUGIN_DIR . 'classes/notification-base-type.php' );
 
 		if ( is_admin () ) {
 			// Include our step processing stuff if we're in the admin.
@@ -582,6 +585,7 @@ class Ninja_Forms {
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/help.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/def-fields.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/fav-fields.php" );
+		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/list-fields.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/template-fields.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/layout-fields.php" );
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms/tabs/field-settings/sidebars/user-info.php" );
@@ -634,27 +638,6 @@ class Ninja_Forms {
 
 		/* System Status */
 		require_once( NINJA_FORMS_DIR . "/includes/classes/class-nf-system-status.php" );
-
-		/* Require Pre-Registered Fields */
-		require_once( NINJA_FORMS_DIR . "/includes/fields/textbox.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/checkbox.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/list.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/hidden.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/organizer.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/submit.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/spam.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/honeypot.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/timed-submit.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/hr.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/desc.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/textarea.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/password.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/rating.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/calc.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/country.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/tax.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/credit-card.php" );
-		require_once( NINJA_FORMS_DIR . "/includes/fields/number.php" );
 
 		require_once( NINJA_FORMS_DIR . "/includes/admin/save.php" );
 	}
