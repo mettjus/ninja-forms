@@ -195,13 +195,10 @@ class NF_Forms_FormObject {
 	 * @param mixed $value
 	 * @return bool
 	 */
-	public function update_setting( $setting, $value, $form_id = '' ) {
-		if ( '' == $form_id ) {
-			$this->settings[ $setting ] = $value;
-			nf_update_object_meta( $this->form_id, $setting, $value );			
-		} else {
-			nf_update_object_meta( $form_id, $setting, $value );
-		}
+	public function update_setting( $setting, $value ) {
+		$this->settings[ $setting ] = $value;
+		nf_update_object_meta( $this->form_id, $setting, $value );
+		$this->dump_cache();
 
 		return true;
 	}
