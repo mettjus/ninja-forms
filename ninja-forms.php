@@ -197,6 +197,7 @@ class Ninja_Forms {
 		// Check and update our version number.
 		self::$instance->update_version_number();
 
+		self::$instance->system_status = new NF_SystemStatus();
 		// Fire our Ninja Forms init action.
 		do_action( 'nf_admin_init', self::$instance );
 	}
@@ -609,9 +610,6 @@ class Ninja_Forms {
 
 		/* Manage Addons */
 		require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms-addons/tabs/addons/addons.php" );
-
-		/* System Status */
-		require_once( NINJA_FORMS_DIR . "/includes/classes/class-nf-system-status.php" );
 
 		require_once( NINJA_FORMS_DIR . "/includes/admin/save.php" );
 	}

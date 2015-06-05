@@ -9,12 +9,12 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( ! class_exists( 'NF_System_Status' ) ) :
+if ( ! class_exists( 'NF_SystemStatus' ) ) :
 
 /**
- * NF_System_Status Class
+ * NF_SystemStatus Class
  */
-class NF_System_Status {
+class NF_SystemStatus {
 
 	/**
 	 * Initializes the class
@@ -47,5 +47,3 @@ class NF_System_Status {
 }
 
 endif;
-
-return new NF_System_Status();
