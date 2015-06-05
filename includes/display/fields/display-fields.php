@@ -22,7 +22,7 @@ function ninja_forms_display_fields($form_id){
 				$field = $ninja_forms_processing->get_field_settings( $field['id'] );
 			}
 
-			if( isset( $ninja_forms_fields[$field['type']] ) ){
+			// if( isset( $ninja_forms_fields[$field['type']] ) ){
 				$type = $ninja_forms_fields[$field['type']];
 
 				$field_id = $field['id'];
@@ -36,7 +36,7 @@ function ninja_forms_display_fields($form_id){
 				$display_wrap = $type['display_wrap'];
 				$display_label = $type['display_label'];
 				$sub_edit_function = $type['sub_edit_function'];
-				$display_function = $type['display_function'];
+				$display_function = 'test';
 
 				//Check to see if we are currently editing a form submission.
 				//If we are, then $display_function should be set to the sub_edit_function instead.
@@ -120,7 +120,7 @@ function ninja_forms_display_fields($form_id){
 						$arguments['field_id'] = $field_id;
 						$arguments['data'] = $data;
 						$arguments['form_id'] = $form_id;
-						call_user_func_array($display_function, $arguments);
+						Ninja_Forms()->field( $field_id )->output_display_html();
 						do_action( 'ninja_forms_display_after_field_function', $field_id, $data );
 						if( $label_pos == 'left' OR $label_pos == 'inside'){
 							do_action( 'ninja_forms_display_field_help', $field_id, $data );
@@ -146,7 +146,7 @@ function ninja_forms_display_fields($form_id){
 					}
 					do_action( 'ninja_forms_display_after_field', $field_id, $data );
 				}
-			}
+			// }
 		}
 	}
 }

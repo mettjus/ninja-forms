@@ -130,11 +130,14 @@ abstract class NF_Fields_BaseField
 	 * @param  int  $id The ID of the field we're displaying.
 	 * @return void
 	 */
-	public function display( $id )
+	public function output_display_html( $field )
 	{
-		/*
-		This space left intentionally blank
-		 */
+		echo "TEST";
+	}
+
+	public function output_display_div( $field )
+	{
+
 	}
 
 	/**

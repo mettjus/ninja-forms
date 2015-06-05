@@ -202,6 +202,11 @@ class NF_Fields_FieldObject
 		delete_transient( 'nf_field_' . $this->id );
 	}
 
+	public function output_display_html()
+	{
+		Ninja_Forms()->field_types[ $this->type ]->output_display_html( $this );
+	}
+
 	public function output_edit_html()
 	{
 		Ninja_Forms()->field_types[ $this->type ]->output_edit_html( $this );
